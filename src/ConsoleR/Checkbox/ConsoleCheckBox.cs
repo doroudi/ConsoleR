@@ -1,6 +1,22 @@
 using ConsoleR.Checkbox.Models;
 
-namespace ConsoleR.Checkbox;
+namespace ConsoleR;
+
+public static partial class Consoler {
+    public static ConsoleCheckbox Checkbox(string displayText, params string[] options) {
+        return new ConsoleCheckbox(displayText, true,true,true, options);
+    }
+
+    public static ConsoleCheckbox Checkbox(string displayText, bool multiselect, params string[] options)
+    {
+        return new ConsoleCheckbox(displayText, true, true, multiselect, options);
+    }
+
+    public static ConsoleCheckbox Checkbox(string displayText, bool multiselect, bool selectFirst, params string[] options)
+    {
+        return new ConsoleCheckbox(displayText, selectFirst,true, multiselect, options);
+    }
+}
 
 public class ConsoleCheckbox
 {
@@ -67,7 +83,7 @@ public class ConsoleCheckbox
                 ? (option.Hovered ? ConsoleColor.DarkGreen : ConsoleColor.Green)
                 : (option.Hovered ? ConsoleColor.White : ConsoleColor.DarkGray);
 
-            Console.WriteLine((option.Selected ? "[*] " : "[ ] ") + $"{option.Option}");
+            Console.WriteLine((option.Selected ? "(*) " : "( ) ") + $"{option.Option}");
         }
         Console.ResetColor();
         if (_error) Console.WriteLine("\nAt least one item has to be selected!");

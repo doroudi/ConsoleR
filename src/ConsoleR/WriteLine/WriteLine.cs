@@ -1,54 +1,43 @@
 namespace ConsoleR;
 
-public static class WriteLine
+public static partial class Consoler
 {
-    public static void PrintAsciiArt(string message, MessageType messageType = MessageType.None) {
-        Print(AsciiArt.AsciiArt.ToAsciiArt(message), messageType);
+    public static ConsoleKeyInfo ReadKey() {
+        return Console.ReadKey();
     }
-    public static void Print(string message, MessageType messageType = MessageType.None)
+
+    public static string? ReadLine() {
+        return Console.ReadLine();
+    }
+    
+    public static void WriteLine(string message, ConsoleColor? color = null) 
     {
-        switch (messageType)
-        {
-            case MessageType.Success:
-                Write(message, ConsoleColor.Green);
-                break;
-            case MessageType.Info:
-                Write(message, ConsoleColor.Blue);
-                break;
-            case MessageType.Warning:
-                Write(message, ConsoleColor.Yellow);
-                break;
-            case MessageType.Error:
-                Write(message, ConsoleColor.Red);
-                break;
-            default:
-                Write(message);
-                break;
-        }
+        DoWriteLine(message,color);
     }
+
 
     public static void Error(string message)
     {
-        Write(message, ConsoleColor.Red);
+        DoWriteLine(message, ConsoleColor.Red);
     }
 
     public static void Success(string message)
     {
-        Write(message, ConsoleColor.Green);
+        DoWriteLine(message, ConsoleColor.Green);
     }
 
     public static void Info(string message)
     {
-        Write(message, ConsoleColor.Blue);
+        DoWriteLine(message, ConsoleColor.Blue);
     }
 
     public static void Warning(string message)
     {
-        Write(message, ConsoleColor.Yellow);
+        DoWriteLine(message, ConsoleColor.Yellow);
     }
 
 
-    private static void Write(string message, ConsoleColor? color = null)
+    private static void DoWriteLine(string message, ConsoleColor? color = null)
     {
         if (color.HasValue)
         {

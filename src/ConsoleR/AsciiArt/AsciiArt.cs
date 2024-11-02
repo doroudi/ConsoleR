@@ -1,10 +1,10 @@
 using ConsoleR.AsciiArt.AsciiCharacters;
 
-namespace ConsoleR.AsciiArt;
+namespace ConsoleR;
 
-public static class AsciiArt
+public static partial class Consoler
 {
-    public static string ToAsciiArt(string message) {
-        return AsciiChars.GetAsciiArt(message);
+    public static void AsciiArt(string message, ConsoleColor? color = null) {
+        WriteLine(AsciiChars.GetAsciiArt(message), color);
     }
 }

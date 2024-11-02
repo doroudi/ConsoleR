@@ -1,12 +1,20 @@
 using ConsoleR.Menu.Models;
 
-namespace ConsoleR.Menu;
+namespace ConsoleR;
+
+public static partial class Consoler
+{
+    public static ConsoleMenu Menu(string displayText, params string[] args)
+    {
+        return new ConsoleMenu(displayText, true, args);
+    }
+}
+
 
 public class ConsoleMenu
 {
     private string _displayText;
     private int _selectedIndex;
-    private bool _error;
     private List<MenuOption> _options;
     private ConsoleKey _key;
     private ConsoleKey _prevKey;
@@ -22,7 +30,6 @@ public class ConsoleMenu
     private void Init(bool selectFirst, string[] options)
     {
         _selectedIndex = selectFirst ? 0 : -1;
-        _error = false;
 
         for (var i = 0; i < options.Length; i++)
             _options.Add(new MenuOption(options[i], _selectedIndex == i));
@@ -40,7 +47,6 @@ public class ConsoleMenu
             Console.WriteLine((option.Selected ? "[*] " : "[ ] ") + $"{option.Option}");
         }
         Console.ResetColor();
-        //if (_error) Console.WriteLine("\nAt least one item has to be selected!");
     }
 
 
