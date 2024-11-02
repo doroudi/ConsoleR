@@ -12,7 +12,7 @@ internal static class AsciiChars
  / ___ \ 
 /_/   \_\",
 @"
- ____
+ ____  
 | __ ) 
 |  _ \ 
 | |_) |
