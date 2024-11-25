@@ -31,6 +31,7 @@ jobs:
         fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
+    - run: dotnet build src/ConsoleR/ConsoleR.csproj --configuration Release
     - run: dotnet pack src/ConsoleR/ConsoleR.csproj --configuration Release --output ${{ env.NuGetDirectory }}
     - uses: actions/upload-artifact@v3
       with:
