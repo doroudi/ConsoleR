@@ -8,15 +8,14 @@ public static partial class Consoler
         DoWrite(message, color);
     }
 
-
     private static void DoWrite(string message, ConsoleColor? color = null)
     {
         if (color.HasValue)
-            Console.ForegroundColor = color.Value;
+            System.Console.ForegroundColor = color.Value;
         
-        Console.Write(message);
+        System.Console.Write(message);
 
         if (color.HasValue)
-            Console.ResetColor();
+            System.Console.ResetColor();
     }
 }

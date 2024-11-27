@@ -16,7 +16,7 @@
 
   <PropertyGroup>
    <Version>0.1.0</Version>
-    <PackageId>ConsoleR</PackageId>
+    <PackageId>Doroudi.ConsoleR</PackageId>
     <Authors>Saeid Doroudi</Authors>
     <Description>ConsoleR is set of utilities to make awesome console apps in .Net</Description>
     <PackageProjectUrl>https://github.com/doroudi/ConsoleR</PackageProjectUrl>

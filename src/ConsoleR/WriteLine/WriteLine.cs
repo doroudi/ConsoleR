@@ -1,24 +1,24 @@
 namespace ConsoleR;
 
-public static partial class Consoler
+public static partial class Console
 {
     public static ConsoleKeyInfo ReadKey() {
-        return Console.ReadKey();
+        return System.Console.ReadKey();
     }
 
     public static string? ReadLine() {
-        return Console.ReadLine();
+        return System.Console.ReadLine();
     }
 
     public static string? ReadLine(string? prompt) {
-        Console.WriteLine(prompt);
-        return Console.ReadLine();
+        System.Console.WriteLine(prompt);
+        return System.Console.ReadLine();
     }
 
     public static string? Read(string? prompt)
     {
-        Console.Write(prompt);
-        return Console.ReadLine();
+        System.Console.Write(prompt);
+        return System.Console.ReadLine();
     }
 
     public static void WriteLine(string message, ConsoleColor? color = null) 
@@ -64,10 +64,10 @@ public static partial class Consoler
     {
         if (color.HasValue)
         {
-            Console.ForegroundColor = color.Value;
+            System.Console.ForegroundColor = color.Value;
         }
 
-        Console.WriteLine(message);
-        Console.ResetColor();
+        System.Console.WriteLine(message);
+        System.Console.ResetColor();
     }
 }

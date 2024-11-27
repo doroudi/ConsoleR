@@ -2,7 +2,7 @@ using ConsoleR.Checkbox.Models;
 
 namespace ConsoleR;
 
-public static partial class Consoler {
+public static partial class Console {
     public static ConsoleCheckbox Checkbox(string displayText, params string[] options) {
         return new ConsoleCheckbox(displayText, true,true,true, options);
     }
@@ -73,20 +73,20 @@ public class ConsoleCheckbox
 
     public void Show()
     {
-        Console.Clear();
-        Console.WriteLine(_displayText);
-        Console.WriteLine("(Use Arrow keys to navigate up and down, Space bar to select and Enter to submit)");
+        System.Console.Clear();
+        System.Console.WriteLine(_displayText);
+        System.Console.WriteLine("(Use Arrow keys to navigate up and down, Space bar to select and Enter to submit)");
 
         foreach (var option in _options)
         {
-            Console.ForegroundColor = option.Selected
+            System.Console.ForegroundColor = option.Selected
                 ? (option.Hovered ? ConsoleColor.DarkGreen : ConsoleColor.Green)
                 : (option.Hovered ? ConsoleColor.White : ConsoleColor.DarkGray);
 
-            Console.WriteLine((option.Selected ? "(*) " : "( ) ") + $"{option.Option}");
+            System.Console.WriteLine((option.Selected ? "(*) " : "( ) ") + $"{option.Option}");
         }
-        Console.ResetColor();
-        if (_error) Console.WriteLine("\nAt least one item has to be selected!");
+        System.Console.ResetColor();
+        if (_error) System.Console.WriteLine("\nAt least one item has to be selected!");
     }
 
     public CheckboxReturn[] Select()
@@ -95,7 +95,7 @@ public class ConsoleCheckbox
         var end = false;
         while (!end)
         {
-            _key = Console.KeyAvailable ? Console.ReadKey(true).Key : ConsoleKey.D9;
+            _key = System.Console.KeyAvailable ? System.Console.ReadKey(true).Key : ConsoleKey.D9;
             if (_key == _prevKey) continue;
             _options[_hoveredIndex].Hovered = false;
 

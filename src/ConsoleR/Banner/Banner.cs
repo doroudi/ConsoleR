@@ -1,6 +1,6 @@
 namespace ConsoleR;
 
-public static partial class Consoler {
+public static partial class Console {
     public static void Banner(string text, ConsoleColor? color = null) {
         const int total = 64;
         var spaces = (total - text.Length)/2;
