@@ -1,9 +1,11 @@
 ﻿using Console = ConsoleR.Console;
 const string message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-Console.AsciiArt("HELLO", ConsoleColor.Yellow);
+Console.AsciiArt("WELCOME TO", ConsoleColor.Green);
+Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
 
 
+// mgy
 
 Console.WriteLine(message, ConsoleColor.Cyan);
 Console.Error("Error Occurred in app. please restart");
