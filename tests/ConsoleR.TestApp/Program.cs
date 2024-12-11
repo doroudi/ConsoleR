@@ -1,6 +1,12 @@
-﻿using Console = ConsoleR.Console;
+﻿using ConsoleR;
+using Console = ConsoleR.Console;
 const string message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+
+Console.Alert("Hello This is first ever alert", "Succeed", ConsoleMessageType.Success);
+Console.Alert("Hello This is first ever alert!", "Info", ConsoleMessageType.Info);
+Console.Alert("System.NullReference Exception", "Exception", ConsoleMessageType.Error);
+return;
 Console.AsciiArt("WELCOME TO", ConsoleColor.Green);
 Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
 

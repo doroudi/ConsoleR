@@ -6,6 +6,17 @@ public static partial class Console
         return System.Console.ReadKey();
     }
 
+    public static void Clear() {
+        System.Console.Clear();
+    }
+
+    public static void WriteBool(bool value, string? trueMessage, string? falseMessage) {
+        if(value) 
+            Success(trueMessage ?? "True");
+        else
+            Error(falseMessage ?? "False");
+    }
+
     public static string? ReadLine() {
         return System.Console.ReadLine();
     }
@@ -26,35 +37,34 @@ public static partial class Console
         DoWriteLine(message,color);
     }
 
-
-    public static void Error(string message, bool showIcon = true)
+    public static void Error(string message, bool showIcon = false)
     {
         if (showIcon) {
-            message = "❌ " + message;
+            message = ConsoleHelpers.IsLegacy? "X" : "❌ " + message;
         }
         DoWriteLine(message, ConsoleColor.Red);
     }
 
-    public static void Success(string message, bool showIcon = true)
+    public static void Success(string message, bool showIcon = false)
     {
         if (showIcon) {
-            message = "✅ " + message;
+            message = ConsoleHelpers.IsLegacy ? "" : "✅ " + message;
         }
         DoWriteLine(message, ConsoleColor.Green);
     }
 
-    public static void Info(string message, bool showIcon = true)
+    public static void Info(string message, bool showIcon = false)
     {
         if (showIcon) {
-            message = "ℹ️ " + message;
+            message = ConsoleHelpers.IsLegacy ? "i " :"❕" + message;
         }
         DoWriteLine(message, ConsoleColor.Blue);
     }
 
-    public static void Warning(string message, bool showIcon = true)
+    public static void Warning(string message, bool showIcon = false)
     {
         if (showIcon) {
-            message = "⚠️ " + message;
+            message = ConsoleHelpers.IsLegacy ? "! " : "⚠️ " + message;
         }
         DoWriteLine(message, ConsoleColor.Yellow);
     }

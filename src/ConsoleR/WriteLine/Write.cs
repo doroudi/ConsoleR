@@ -1,8 +1,7 @@
 namespace ConsoleR;
 
-public static partial class Consoler
+public static partial class Console
 {
-
     public static void Write(string message, ConsoleColor? color = null)
     {
         DoWrite(message, color);
