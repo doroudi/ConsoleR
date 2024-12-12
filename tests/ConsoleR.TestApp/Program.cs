@@ -3,9 +3,14 @@ using Console = ConsoleR.Console;
 const string message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 
-Console.Alert("Hello This is first ever alert", "Succeed", ConsoleMessageType.Success);
-Console.Alert("Hello This is first ever alert!", "Info", ConsoleMessageType.Info);
+Console.Alert("SELECT [Id],[AccountNumber],[CurrencyRefId],[Balance],[UserRefId],[ChangeBalanceOnUtc] FROM Wallet Where AccountNumber = ''", "Succeed", ConsoleMessageType.Success);
+Console.Alert("System.NullReference Exception", "Info11", ConsoleMessageType.Info);
+Console.Alert("System.NullReference Exception", "Info1", ConsoleMessageType.Info);
+Console.Alert("System.NullReference Exception", "", ConsoleMessageType.Info);
+Console.Alert("System.NullReference Exception", "Exception", ConsoleMessageType.Info);
+Console.Alert("System.NullReference Exception", "Warning", ConsoleMessageType.Info);
 Console.Alert("System.NullReference Exception", "Exception", ConsoleMessageType.Error);
+Console.Alert("System.NullReference EXCEPTION", "EXCEPTION", ConsoleMessageType.Success);
 return;
 Console.AsciiArt("WELCOME TO", ConsoleColor.Green);
 Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);

@@ -9,7 +9,7 @@ public static partial class Console {
 internal static class ConsoleAlert {
     public static void Create(string message, string title, ConsoleMessageType type = ConsoleMessageType.Info) 
     {
-        var maxLength = message.Length + 4;
+        var maxLength = message.Length + 4; // 4 for borders and spaces around
 
         title ??= "";
         
@@ -22,8 +22,11 @@ internal static class ConsoleAlert {
 
     private static string BuildHeader(string title, ConsoleMessageType type, int maxLength)
     {
-        int count = (int) Math.Ceiling((decimal)((maxLength - title.Length)/2));
-        var str = $"┌{'─'.Repeat(count-1)}{title}{'─'.Repeat(count)}┐";
+
+        int count = (int) Math.Ceiling((decimal)((maxLength - 2 - title.Length)/2));
+        var isBalanced = count * 2 + title.Length >= (maxLength - 2) ;
+
+        var str = $"┌{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1: count)}┐";
 
         return str;
     }
