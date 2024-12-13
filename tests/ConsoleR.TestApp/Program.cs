@@ -5,17 +5,16 @@ const string message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 Console.Alert("SELECT [Id],[AccountNumber],[CurrencyRefId],[Balance],[UserRefId],[ChangeBalanceOnUtc] FROM Wallet Where AccountNumber = ''", "Succeed", ConsoleMessageType.Success);
 Console.Alert("System.NullReference Exception", "Info11", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "Info1", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "Exception", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "Warning", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "Exception", ConsoleMessageType.Error);
-Console.Alert("System.NullReference EXCEPTION", "EXCEPTION", ConsoleMessageType.Success);
-return;
+Console.Alert("System.NullReference Exception", "Info1", ConsoleMessageType.Error);
+Console.Alert("Welcome", "Info1", ConsoleMessageType.Success);
+
 Console.AsciiArt("WELCOME TO", ConsoleColor.Green);
 Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
 
+var password = Console.Password("Please enter password: ");
 
+if(password is not null)
+    Console.Alert(password, "Password", ConsoleMessageType.Warning);
 // mgy
 
 Console.WriteLine(message, ConsoleColor.Cyan);

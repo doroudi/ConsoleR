@@ -37,6 +37,11 @@ public static partial class Console
         DoWriteLine(message,color);
     }
 
+    public static void WriteLine()
+    {
+        DoWriteLine("");
+    }
+
     public static void Error(string message, bool showIcon = false)
     {
         if (showIcon) {
