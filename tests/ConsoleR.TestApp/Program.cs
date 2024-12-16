@@ -1,37 +1,23 @@
 ﻿using ConsoleR;
 using Console = ConsoleR.Console;
-const string message = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-
-Console.Alert("SELECT [Id],[AccountNumber],[CurrencyRefId],[Balance],[UserRefId],[ChangeBalanceOnUtc] FROM Wallet Where AccountNumber = ''", "Succeed", ConsoleMessageType.Success);
-Console.Alert("System.NullReference Exception", "Info11", ConsoleMessageType.Info);
-Console.Alert("System.NullReference Exception", "Info1", ConsoleMessageType.Error);
-Console.Alert("Welcome", "Info1", ConsoleMessageType.Success);
-
-Console.AsciiArt("WELCOME TO", ConsoleColor.Green);
-Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
-
-var password = Console.Password("Please enter password: ");
-
-if(password is not null)
-    Console.Alert(password, "Password", ConsoleMessageType.Warning);
-// mgy
-
-Console.WriteLine(message, ConsoleColor.Cyan);
-Console.Error("Error Occurred in app. please restart");
-Console.Success("Task Done successfully");
-Console.Info("Press any key to go next demo:");
-Console.ReadKey();
-string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "JS"];
+string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"];
 var selectedItem = Console.Menu("Please Select One beloved frontend framework", frontEndFrameworks).Select();
-Console.Success("Your choice is: \n\n");
 Console.AsciiArt(frontEndFrameworks[selectedItem], GetFrameworkColor(frontEndFrameworks[selectedItem]));
 
-Console.Info("Ready for next demo? press any key");
-Console.ReadKey();
+Console.Info("Progress started...");
+Console.Warning("It seems there is issue in the system");
+Console.Error("Process failed :(");
+Console.Info("Retrying...");
+Console.ReadLine("Press enter to continue");
+Console.Success("Progress Succeed", showIcon: true);
+Console.WriteLine("Wait it is not completed yet", ConsoleColor.Magenta);
+
+var password = Console.Password("Enter your password:");
+Console.Alert($"your password is: {password}", "Password", ConsoleMessageType.Info);
 
 
-string[] plugins = ["Typescript", "Linter", "Nuxt", "Vite"];
+string[] plugins = ["TypeScript", "Linter", "Nuxt", "Vite"];
 var selectedItems = Console.Checkbox("Select feature that you want to install:", plugins).Select();
 for (int i = 0; i < selectedItems.Length; i++) {
     var plugin = selectedItems[i];
