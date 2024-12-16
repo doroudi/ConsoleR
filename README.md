@@ -65,4 +65,6 @@ for (int i = 0; i < selectedItems.Length; i++) {
 
 ```
 
-![ConsoleR](/docs/banner.png "Preview")
+#### Output
+
+![ConsoleR](https://raw.githubusercontent.com/doroudi/ConsoleR/refs/heads/main/docs/ConsoleRBanner.png)
