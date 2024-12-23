@@ -1,6 +1,18 @@
 ﻿using ConsoleR;
 using Console = ConsoleR.Console;
 
+
+Person[] people = [
+    new Person("Saeid Doroudi",30, "Tehran"),
+    new Person("Saman", 25, "Marand"),
+    new Person("Alice", 35, "Zurich"),
+    new Person("Alireza", 40, "Tabriz")
+];
+
+Console.Table(people);
+
+return;
+
 string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"];
 var selectedItem = Console.Menu("Please Select One beloved frontend framework", frontEndFrameworks).Select();
 Console.AsciiArt(frontEndFrameworks[selectedItem], GetFrameworkColor(frontEndFrameworks[selectedItem]));
@@ -35,3 +47,7 @@ ConsoleColor GetFrameworkColor(string framework) {
         _ => ConsoleColor.White
     };
 }
+
+
+
+record Person(string Name,int Age, string City);
