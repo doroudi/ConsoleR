@@ -13,7 +13,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup>
-    <Version>0.1.4</Version>
+    <Version>0.2.0</Version>
     <PackageId>Doroudi.ConsoleR</PackageId>
     <Authors>Saeid Doroudi</Authors>
     <Description>ConsoleR is set of utilities to make awesome console apps in .Net</Description>

@@ -22,6 +22,7 @@ NuGet\Install-Package Doroudi.ConsoleR
 - WriteLine
 - Password
 - Alert
+- Table
 
 
 #### How To Use
@@ -63,6 +64,18 @@ for (int i = 0; i < selectedItems.Length; i++) {
     Console.WriteLine(plugin.Option, (ConsoleColor)i);
 }
 
+// Table
+Person[] people = [
+    new Person("Saeid",30, "Tehran"),
+    new Person("Saman", 25, "Marand"),
+    new Person("Alice", 35, "Zurich"),
+    new Person("Alex", 40, "Turin")
+];
+
+Console.Table(people);
+
+
+record Person(string Name,int Age, string City);
 ```
 
 #### Output
