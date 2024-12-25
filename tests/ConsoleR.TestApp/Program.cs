@@ -17,6 +17,8 @@ Console.WriteLine("Wait it is not completed yet", ConsoleColor.Magenta);
 var password = Console.Password("Enter your password:");
 Console.Alert($"your password is: {password}", "Password", ConsoleMessageType.Info);
 
+Console.ReadKey();
+
 
 string[] plugins = ["TypeScript", "Linter", "Nuxt", "Vite"];
 var selectedItems = Console.Checkbox("Select feature that you want to install:", plugins).Select();

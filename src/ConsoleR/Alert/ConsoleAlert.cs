@@ -12,11 +12,10 @@ internal static class ConsoleAlert {
         var maxLength = message.Length + 4; // 4 for borders and spaces around
 
         title ??= "";
-        
         Console.WriteLine(BuildHeader(title,type, maxLength), (ConsoleColor)type);
-        Console.Write("|", (ConsoleColor)type);
+        Console.Write("│", (ConsoleColor)type);
         Console.Write($" {message} ");
-        Console.Write("|\n", (ConsoleColor)type);
+        Console.Write("│\n", (ConsoleColor)type);
         Console.WriteLine(BuildFooter(type, maxLength), (ConsoleColor)type);
     }
 
