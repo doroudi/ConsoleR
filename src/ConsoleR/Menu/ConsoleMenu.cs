@@ -9,9 +9,9 @@ public static partial class Console
         return new ConsoleMenu(displayText, true, args);
     }
 
-    public static ConsoleMenu Menu(string displayText,bool selectWithNumbers, params string[] args)
+    public static ConsoleMenu Menu(string displayText,bool showNumbers, params string[] args)
     {
-        return new ConsoleMenu(displayText, true, selectWithNumbers, args);
+        return new ConsoleMenu(displayText, true, showNumbers, args);
     }
 }
 
@@ -64,7 +64,7 @@ public class ConsoleMenu
             MenuOption? option = _options[i];
             System.Console.ForegroundColor = option.Selected ? ConsoleColor.Green : ConsoleColor.White;
             var numberSign = _showNumbers ? i + 1 + ")" : "";
-            System.Console.WriteLine((option.Selected ? "[*] " : "[ ] " ) + $"{numberSign} {option.Option}");
+            System.Console.WriteLine($"{numberSign} {option.Option}");
         }
         System.Console.ResetColor();
     }
