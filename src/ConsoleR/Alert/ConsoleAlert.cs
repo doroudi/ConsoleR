@@ -9,13 +9,19 @@ public static partial class Console {
 internal static class ConsoleAlert {
     public static void Create(string message, string title, ConsoleMessageType type = ConsoleMessageType.Info) 
     {
-        var maxLength = message.Length + 4; // 4 for borders and spaces around
+        var stringLength = message.Length + 4; // 4 for borders and spaces around
+        var maxLength = Math.Min(stringLength, System.Console.WindowWidth); // Set a maximum length for each line
+        var wrappedMessage = WrapText(message, maxLength - 4); // 4 for borders and spaces around
+        
 
         title ??= "";
         Console.WriteLine(BuildHeader(title,type, maxLength), (ConsoleColor)type);
-        Console.Write("│", (ConsoleColor)type);
-        Console.Write($" {message} ");
-        Console.Write("│\n", (ConsoleColor)type);
+        foreach (var line in wrappedMessage)
+        {
+            Console.Write("│", (ConsoleColor)type);
+            Console.Write($" {line.PadRight(maxLength - 4)} ");
+            Console.Write("│\n", (ConsoleColor)type);
+        }
         Console.WriteLine(BuildFooter(type, maxLength), (ConsoleColor)type);
     }
 
@@ -34,6 +40,34 @@ internal static class ConsoleAlert {
     {
         return $"└{'─'.Repeat(maxLength - 2)}┘";
     }
+
+    private static List<string> WrapText(string text, int maxLength)
+    {
+        var words = text.Split(' ');
+        var lines = new List<string>();
+        var currentLine = "";
+
+        foreach (var word in words)
+        {
+            if ((currentLine + word).Length > maxLength)
+            {
+                lines.Add(currentLine);
+                currentLine = word;
+            }
+            else
+            {
+                currentLine += (currentLine.Length > 0 ? " " : "") + word;
+            }
+        }
+
+        if (currentLine.Length > 0)
+        {
+            lines.Add(currentLine);
+        }
+
+        return lines;
+    }
+
 }
 
 public enum ConsoleMessageType: int {
