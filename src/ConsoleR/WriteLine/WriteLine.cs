@@ -2,9 +2,7 @@ namespace ConsoleR;
 
 public static partial class Console
 {
-    public static ConsoleKeyInfo ReadKey() {
-        return System.Console.ReadKey();
-    }
+    
 
     public static void Clear() {
         System.Console.Clear();
@@ -17,21 +15,7 @@ public static partial class Console
             Error(falseMessage ?? "False");
     }
 
-    public static string? ReadLine() {
-        return System.Console.ReadLine();
-    }
-
-    public static string? ReadLine(string? prompt) {
-        System.Console.WriteLine(prompt);
-        return System.Console.ReadLine();
-    }
-
-    public static string? Read(string? prompt)
-    {
-        System.Console.Write(prompt);
-        return System.Console.ReadLine();
-    }
-
+    
     public static void WriteLine(string message, ConsoleColor? color = null) 
     {
         DoWriteLine(message,color);

@@ -1,7 +1,11 @@
 ﻿using ConsoleR;
 using Console = ConsoleR.Console;
 
+var value = Console.ReadLine("ProjectName:", "ConsoleR");
+if(!string.IsNullOrEmpty(value))
+    Console.AsciiArt(value, ConsoleColor.Yellow);
 
+Console.ReadKey();
 string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"];
 var selectedItem = Console.Menu("Please Select One beloved frontend framework", true, frontEndFrameworks).Select();
 Console.AsciiArt(frontEndFrameworks[selectedItem], GetFrameworkColor(frontEndFrameworks[selectedItem]));

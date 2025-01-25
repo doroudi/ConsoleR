@@ -45,7 +45,7 @@ internal static class ConsoleAlert {
     {
         var words = text.Split(' ');
         var lines = new List<string>();
-        var currentLine = "";
+        var currentLine = string.Empty;
 
         foreach (var word in words)
         {
