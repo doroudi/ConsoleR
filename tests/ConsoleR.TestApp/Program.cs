@@ -1,6 +1,13 @@
 ﻿using ConsoleR;
 using Console = ConsoleR.Console;
 
+var result = Console.Confirm("Are you sure to process");
+if(result)
+    Console.Success("Processing", true);
+else
+    Console.Warning("You cancelled request", true);
+
+return;
 var value = Console.ReadLine("ProjectName:", "ConsoleR");
 if(!string.IsNullOrEmpty(value))
     Console.AsciiArt(value, ConsoleColor.Yellow);
