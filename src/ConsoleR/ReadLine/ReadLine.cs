@@ -57,7 +57,7 @@ public partial class Console
 
             }
             else if (info.Key == ConsoleKey.Enter) { Write(Environment.NewLine); break; }
-            else if (char.IsLetterOrDigit(info.KeyChar))
+            else 
             {
                 System.Console.Write(info.KeyChar);
                 chars.Add(info.KeyChar);
