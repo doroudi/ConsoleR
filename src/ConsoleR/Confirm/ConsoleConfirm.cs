@@ -11,7 +11,7 @@ public partial class Console {
 }
 
 internal class ConsoleConfirm(string Message) {
-    private bool? _defaultValue;
+    private readonly bool? _defaultValue;
 
     internal ConsoleConfirm(string Message, bool defaultValue): this(Message) {
         
@@ -25,7 +25,7 @@ internal class ConsoleConfirm(string Message) {
         }
         Console.Write($"{Message} [{confirmActions}]: ");
         var result =  Console.ReadKey();
-        Console.WriteLine();
+        System.Console.WriteLine();
         if(result.Key == ConsoleKey.Enter)
         {
             if(_defaultValue.HasValue)

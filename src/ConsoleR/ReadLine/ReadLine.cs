@@ -7,11 +7,17 @@ public partial class Console
         return System.Console.ReadKey();
     }
 
+    public static ConsoleKeyInfo ReadKey(string message)
+    {
+        Write(message);
+        return System.Console.ReadKey();
+    }
+
     public static string? ReadLine(string? defaultValue = null)
     {
         if (string.IsNullOrEmpty(defaultValue))
             return System.Console.ReadLine();
-        
+
         return ReadWithEditableValue(defaultValue);
     }
 
