@@ -26,6 +26,11 @@ public class Spinner
 
     public async Task Start(Action action, string message = "")
     {
+        await Start(() => Task.Run(action), message);
+    }
+
+    public async Task Start(Func<Task> asyncAction, string message = "")
+    {
         _message = message;
         System.Console.CursorVisible = false;
         _task = Task.Run(async () =>
@@ -39,12 +44,13 @@ public class Spinner
 
         try
         {
-            action.Invoke();
+            // Await the async action
+            await asyncAction.Invoke().ConfigureAwait(false);
             Stop(_message);
         }
         catch (Exception ex)
         {
-            Stop(errorMessage:ex.Message);
+            Stop(errorMessage: ex.Message);
         }
         finally
         {
