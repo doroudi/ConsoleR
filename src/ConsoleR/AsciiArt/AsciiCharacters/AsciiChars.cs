@@ -396,14 +396,14 @@ __  __
     private static string ToSingleLine(List<string> asciiChars)
     {
         var sb = new StringBuilder();
-        var rowsCount = asciiChars[0].Split(Environment.NewLine).Length;
+        var rowsCount = asciiChars[0].Split("\r\n").Length;
         for(var i = 0; i < rowsCount;i++){
             for (var j = 0; j < asciiChars.Count;j++) {
-                var splitted = asciiChars[j].Split(Environment.NewLine);
+                var splitted = asciiChars[j].Split("\r\n");
                     sb.Append(splitted[i]);
                
             }
-            sb.Append(Environment.NewLine);
+            sb.Append("\r\n");
         }
 
         return sb.ToString();

@@ -51,9 +51,10 @@ public class ConsoleMenu
 
     public void Show()
     {
+        System.Console.SetCursorPosition(0, 0);
         System.Console.Clear();
         System.Console.WriteLine(_displayText);
-        if(_showNumbers){
+        if(_showNumbers) {
             System.Console.WriteLine("(Use Arrow keys to navigate up and down to select and Enter to submit or use number to select)");
         }
         else
@@ -61,7 +62,7 @@ public class ConsoleMenu
 
         for (int i = 0; i < _options.Count; i++)
         {
-            MenuOption? option = _options[i];
+            var option = _options[i];
             System.Console.ForegroundColor = option.Selected ? ConsoleColor.Green : ConsoleColor.White;
             var numberSign = _showNumbers ? i + 1 + ")" : "";
             System.Console.WriteLine($"{numberSign} {option.Option}");

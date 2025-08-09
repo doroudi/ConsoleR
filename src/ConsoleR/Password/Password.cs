@@ -30,7 +30,7 @@ public  static partial class Console {
                 Write("*");
             }
         } while (true);
-        WriteLine();
+        System.Console.WriteLine();
         return password;
     }
 } 
