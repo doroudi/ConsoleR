@@ -47,7 +47,7 @@ internal static class AsciiChars
 | |  _ 
 | |_| |
  \____|",
-@"
+@"    
  _   _ 
 | | | |
 | |_| |
@@ -221,164 +221,143 @@ __
   __| |
  / _` |
 | (_| |
- \__,_|
-",
+ \__,_|",
 @"
       
   ___ 
  / _ \
 |  __/
- \___|
-",
+ \___|",
 @"
   __ 
  / _|
 | |_ 
 |  _|
-|_|  
-",
+|_|  ",
 @"   
+
   __ _ 
  / _` |
 | (_| |
  \__, |
- |___/ 
-",
-@" 
+ |___/ ",
+@"     
  _     
 | |__  
 | '_ \ 
 | | | |
-|_| |_|
-",
+|_| |_|",
 @" 
  _ 
 (_)
 | |
 | |
-|_|
-",
+|_|",
 @"
  
    _ 
   (_)
   | |
  _/ |
-|__/ 
-",
+|__/ ",
 @" 
  _    
 | | __
 | |/ /
 |   < 
-|_|\_\
-",
+|_|\_\",
 @"
  _ 
 | |
 | |
 | |
-|_|
-",
+|_|",
 @"
            
  _ __ ___  
 | '_ ` _ \ 
 | | | | | |
-|_| |_| |_|
-",
+|_| |_| |_|",
 @"
        
  _ __  
 | '_ \ 
 | | | |
-|_| |_|
-",
+|_| |_|",
 @"
-       
+
   ___  
  / _ \ 
 | (_) |
- \___/ 
-",
-@"     
+ \___/ ",
+@"
+
  _ __  
 | '_ \ 
 | |_) |
 | .__/ 
-|_|    
-",
+|_|    ",
 @" 
   __ _ 
  / _` |
 | (_| |
  \__, |
-    |_|
-",
+    |_|",
 @"
       
  _ __ 
 | '__|
 | |   
-|_|   
-",
+|_|   ",
 @"
      
  ___ 
 / __|
 \__ \
-|___/
-",
+|___/",
 @"  
  _   
 | |_ 
 | __|
 | |_ 
- \__|
-",
+ \__|",
 @"
        
  _   _ 
 | | | |
 | |_| |
- \__,_|
-",
+ \__,_|",
 @"
        
 __   __
 \ \ / /
  \ V / 
-  \_/  
-",
+  \_/  ",
 @"
           
 __      __
 \ \ /\ / /
  \ V  V / 
-  \_/\_/  
-",
+  \_/\_/  ",
 @"
       
 __  __
 \ \/ /
  >  < 
-/_/\_\
-",
+/_/\_\",
 @"
        
  _   _ 
 | | | |
 | |_| |
  \__, |
- |___/ 
-",
+ |___/ ",
 @"
-     
+   
  ____
 |_  /
  / / 
-/___|
-",
+/___|",
 ];
    
     public static string GetAsciiArt(string text) {
@@ -396,14 +375,28 @@ __  __
     private static string ToSingleLine(List<string> asciiChars)
     {
         var sb = new StringBuilder();
-        var rowsCount = asciiChars[0].Split("\r\n").Length;
+        var allSplits = asciiChars.Select(x => x.Split("\r\n"));
+        var rowsCount = allSplits.Select(x => x.Length).Max();
+
         for(var i = 0; i < rowsCount;i++){
             for (var j = 0; j < asciiChars.Count;j++) {
-                var splitted = asciiChars[j].Split("\r\n");
-                    sb.Append(splitted[i]);
+                var splitted = asciiChars[j].Split(Environment.NewLine);
+                //var splitted = allSplits;
+                var maxLength = splitted.Select(x => x.Length).Max();
+                if (i < splitted.Length)
+                {
+                    if (splitted[i].Length == 0)
+                        sb.Append(new string(' ', maxLength));
+                    else
+                        sb.Append(splitted[i]);
+                }
+                else
+                {
+                    sb.Append(new string(' ', maxLength));
+                }
                
             }
-            sb.Append("\r\n");
+            sb.Append(Environment.NewLine);
         }
 
         return sb.ToString();
