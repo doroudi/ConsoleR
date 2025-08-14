@@ -1,31 +1,33 @@
 namespace ConsoleR;
 
 public static partial class Console {
-    public static void Alert(string message, string title, ConsoleMessageType messageType) {
+    public static void Alert(string message, string title, MessageType messageType = MessageType.None) {
         ConsoleAlert.Create(message, title, messageType);
     }
 }
 
 internal static class ConsoleAlert {
-    public static void Create(string message, string title, ConsoleMessageType type = ConsoleMessageType.Info) 
+    public static void Create(string message, string title, MessageType type = MessageType.Info) 
     {
-        var stringLength = message.Length + 4; // 4 for borders and spaces around
+        var splitted = message.Split(Environment.NewLine);
+        var totalMaxLength = splitted.Select(x => x.Length).Max();
+        var stringLength = totalMaxLength + 4; // 4 for borders and spaces around
         var maxLength = Math.Min(stringLength, System.Console.WindowWidth); // Set a maximum length for each line
         var wrappedMessage = WrapText(message, maxLength - 4); // 4 for borders and spaces around
         
 
         title ??= "";
-        Console.WriteLine(BuildHeader(title,type, maxLength), (ConsoleColor)type);
+        Console.WriteLine(BuildHeader(title, maxLength), (ConsoleColor)type);
         foreach (var line in wrappedMessage)
         {
             Console.Write("│", (ConsoleColor)type);
             Console.Write($" {line.PadRight(maxLength - 4)} ");
             Console.Write("│\n", (ConsoleColor)type);
         }
-        Console.WriteLine(BuildFooter(type, maxLength), (ConsoleColor)type);
+        Console.WriteLine(BuildFooter(maxLength), (ConsoleColor)type);
     }
 
-    private static string BuildHeader(string title, ConsoleMessageType type, int maxLength)
+    private static string BuildHeader(string title, int maxLength)
     {
 
         int count = (int) Math.Ceiling((decimal)((maxLength - 2 - title.Length)/2));
@@ -36,7 +38,7 @@ internal static class ConsoleAlert {
         return str;
     }
     
-    private static string BuildFooter(ConsoleMessageType type, int maxLength)
+    private static string BuildFooter(int maxLength)
     {
         return $"└{'─'.Repeat(maxLength - 2)}┘";
     }
@@ -49,10 +51,10 @@ internal static class ConsoleAlert {
 
         foreach (var word in words)
         {
-            if ((currentLine + word).Length > maxLength)
+            if ((currentLine + word).Length > maxLength || word == Environment.NewLine)
             {
                 lines.Add(currentLine);
-                currentLine = word;
+                currentLine = word.Replace(Environment.NewLine, "");
             }
             else
             {
@@ -68,12 +70,4 @@ internal static class ConsoleAlert {
         return lines;
     }
 
-}
-
-public enum ConsoleMessageType: int {
-    None = 0,
-    Info = ConsoleColor.Blue,
-    Success = ConsoleColor.Green,
-    Warning = ConsoleColor.DarkYellow,
-    Error = ConsoleColor.Red,
 }
