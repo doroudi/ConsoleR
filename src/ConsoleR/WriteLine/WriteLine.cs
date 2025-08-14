@@ -6,8 +6,16 @@ public static partial class Console
         System.Console.Clear();
     }
 
-    public static void WriteBool(bool value, string? trueMessage = null, string? falseMessage = null) {
-        if(value) 
+    public static void ClearAll()
+    {
+        System.Console.SetCursorPosition(0, 0);
+        Clear();
+        
+    }
+
+    public static void WriteBool(bool value, string? trueMessage = null, string? falseMessage = null)
+    {
+        if (value)
             Success(trueMessage ?? "True");
         else
             Error(falseMessage ?? "False");

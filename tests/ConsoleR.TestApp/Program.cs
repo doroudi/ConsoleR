@@ -3,6 +3,11 @@ using ConsoleR.Loading;
 using Console = ConsoleR.Console;
 
 
+
+Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
+
+Console.ReadKey();
+
 var spinner = new Spinner();
 await spinner.Start(() =>
 {
@@ -40,7 +45,7 @@ Console.WriteLine("Wait it is not completed yet, Check next step", ConsoleColor.
 
 Console.WriteLine();
 var password = Console.Password("Enter your password:");
-Console.Alert($"your password is: {password}", "Password", ConsoleMessageType.Info);
+Console.Alert($"your password is: {password}", "Password", MessageType.Info);
 
 
 var result = Console.Confirm("Are you sure to process", true);
