@@ -16,8 +16,8 @@ public class Spinner
     }
     private void Spin()
     {
-        System.Console.SetCursorPosition(0, 0);
-        Console.Clear();
+        System.Console.SetCursorPosition(0, System.Console.CursorTop);
+        // Console.Clear();
         Console.Write($"{Pattern[spinStep++]} {_message}");
         spinStep %= Pattern.Length;
 
@@ -33,7 +33,7 @@ public class Spinner
     {
         _message = message;
         System.Console.CursorVisible = false;
-        System.Console.WriteLine("\x1b]9;4;3;100\x07"); //Set Windows Terminal to loading state
+        System.Console.Write("\x1b]9;4;3;100\x07"); //Set Windows Terminal to loading state
         _task = Task.Run(async () =>
         {
             while (!_cancellationSource.IsCancellationRequested)
@@ -55,7 +55,7 @@ public class Spinner
         }
         finally
         {
-            System.Console.WriteLine("\x1b]9;4;0;100\x07"); //Reset loading state of windows terminal
+            System.Console.Write("\x1b]9;4;0;100\x07"); //Reset loading state of windows terminal
             System.Console.CursorVisible = true;
         }
     }
@@ -65,8 +65,8 @@ public class Spinner
         if (_cancellationSource.IsCancellationRequested)
             return;
 
-        System.Console.SetCursorPosition(0, 0);
-        Console.Clear();
+        System.Console.SetCursorPosition(0, System.Console.CursorTop);
+        // Console.Clear();
         if (string.IsNullOrEmpty(errorMessage))
         {
             Console.Success(message ?? _message, true);

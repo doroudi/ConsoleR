@@ -3,11 +3,6 @@ using ConsoleR.Loading;
 using Console = ConsoleR.Console;
 
 
-
-Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
-
-Console.ReadKey();
-
 var spinner = new Spinner();
 await spinner.Start(() =>
 {
@@ -17,9 +12,22 @@ await spinner.Start(() =>
         x++;
         Thread.Sleep(100);
     }
+    throw new Exception("Something went wrong");
 }, "Starting app");
 
-Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
+var spinner2 = new Spinner();
+await spinner2.Start(() =>
+{
+    int x = 0;
+    while (x < 10)
+    {
+        x++;
+        Thread.Sleep(100);
+    }
+    spinner2.SetText("Almost done...");
+}, "Restart app");
+
+Console.AsciiArt("ConsoleR", ConsoleColor.Green);
 Console.WriteLine("\nPress any key to continue");
 Console.ReadKey();
 
