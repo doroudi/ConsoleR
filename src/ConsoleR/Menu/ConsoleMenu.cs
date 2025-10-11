@@ -6,12 +6,12 @@ public static partial class Console
 {
     public static ConsoleMenu Menu(string displayText, params string[] args)
     {
-        return new ConsoleMenu(displayText, true, args);
+        return ConsoleMenu.Create(displayText, args);
     }
 
-    public static ConsoleMenu Menu(string displayText,bool showNumbers, params string[] args)
+    public static ConsoleMenu Menu(string displayText, bool showNumbers, params string[] args)
     {
-        return new ConsoleMenu(displayText, true, showNumbers, args);
+        return ConsoleMenu.Create(displayText, true, showNumbers, args);
     }
 }
 
@@ -25,14 +25,16 @@ public class ConsoleMenu
     private ConsoleKey _key;
     private ConsoleKey _prevKey;
 
-    public ConsoleMenu(string displayText, bool selectFirst = true, params string[] options)
+    public static ConsoleMenu Create(string displayText, params string[] options) => new(displayText, true, true, options);
+    public static ConsoleMenu Create(string displayText, bool selectFirst = true, bool showNumbers = true, params string[] options) => new(displayText, selectFirst, showNumbers, options);
+    private ConsoleMenu(string displayText, bool selectFirst = true, params string[] options)
     {
         _options = [];
         _displayText = displayText;
         Init(selectFirst, options);
     }
 
-    public ConsoleMenu(string displayText, bool selectFirst = true, bool showNumbers = true, params string[] options)
+    private ConsoleMenu(string displayText, bool selectFirst = true, bool showNumbers = true, params string[] options)
     {
         _options = [];
         _displayText = displayText;
@@ -43,6 +45,7 @@ public class ConsoleMenu
 
     private void Init(bool selectFirst, string[] options)
     {
+        System.Console.OutputEncoding = System.Text.Encoding.UTF8;
         _selectedIndex = selectFirst ? 0 : -1;
 
         for (var i = 0; i < options.Length; i++)
@@ -64,8 +67,9 @@ public class ConsoleMenu
         {
             var option = _options[i];
             System.Console.ForegroundColor = option.Selected ? ConsoleColor.Green : ConsoleColor.White;
-            var numberSign = _showNumbers ? i + 1 + ")" : "";
-            System.Console.WriteLine($"{numberSign} {option.Option}");
+            var numberSign = _showNumbers ? i + 1 + "." : "";
+            var selectedSign = option.Selected ? (ConsoleHelpers.IsLegacy ? ">" : "●") : " ";
+            System.Console.WriteLine($"{selectedSign} {numberSign} {option.Option}");
         }
         System.Console.ResetColor();
     }

@@ -33,7 +33,9 @@ public class Spinner
     {
         _message = message;
         System.Console.CursorVisible = false;
-        System.Console.Write("\x1b]9;4;3;100\x07"); //Set Windows Terminal to loading state
+        if (ConsoleHelpers.IsWindowsTerminal)
+            System.Console.Write("\x1b]9;4;3;100\x07"); //Set Windows Terminal to loading state
+            
         _task = Task.Run(async () =>
         {
             while (!_cancellationSource.IsCancellationRequested)

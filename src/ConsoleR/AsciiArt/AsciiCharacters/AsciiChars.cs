@@ -20,7 +20,7 @@ internal static class AsciiChars
         { 'L', [" _     ","| |    ","| |    ","| |___ ","|_____|"]},
         { 'M', [" __  __ ",@"|  \/  |",@"| |\/| |","| |  | |","|_|  |_|"] },
         { 'N', [" _   _ ", @"| \ | |", @"|  \| |", @"| |\  |", @"|_| \_|"] },
-        { 'O', ["  ___  ","  ___  ",@" / _ \ ","| | | |","| |_| |",@" \___/ "] },
+        { 'O', ["  ___  ",@" / _ \ ","| | | |","| |_| |",@" \___/ "] },
         { 'P', [" ____  ",@"|  _ \ ","| |_) |","|  __/ ","|_|    "] },
         { 'Q', ["  ___  ",@" / _ \ ","| | | |","| |_| |",@" \__\_\"] },
         { 'R', [" ____  ",@"|  _ \ ","| |_) |","|  _ < ",@"|_| \_\"] },
@@ -63,7 +63,7 @@ internal static class AsciiChars
   public static string GetAsciiArt2(string text)
   {
     var sb = new StringBuilder();
-    for (int line = 0; line < 6; line++) // Assuming 6-line tall characters
+    for (int line = 0; line < 6; line++)
     {
       foreach (char c in text)
       {
@@ -76,27 +76,12 @@ internal static class AsciiChars
         }
         else
         {
-          // If character not found, use a default (like space or ?)
           sb.Append(new string(' ', 7));
         }
       }
-      sb.AppendLine(); // New line after each art line
+      sb.AppendLine(); 
     }
     return sb.ToString();
-
-    // foreach (var ch in text.ToUpper().ToCharArray())
-    // {
-    //   if (charMaps.TryGetValue(ch, out var asciiArt))
-    //   {
-    //     resultList.AddRange(asciiArt);
-    //   }
-    //   else
-    //   {
-    //     resultList.Add(new string(' ', 7)); // Default space for unsupported characters
-    //   }
-    // }
-
-    // return ToSingleLine(resultList);
   }
 
 }

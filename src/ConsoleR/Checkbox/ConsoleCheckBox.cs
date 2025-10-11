@@ -1,20 +1,16 @@
 using ConsoleR.Checkbox.Models;
+using System.Linq;
 
 namespace ConsoleR;
 
 public static partial class Console {
-    public static ConsoleCheckbox Checkbox(string displayText, params string[] options) {
-        return new ConsoleCheckbox(displayText, true,true,true, options);
+    public static ConsoleCheckbox Checkbox(string displayText, bool isRequired, params string[] options) {
+        return ConsoleCheckbox.Create(displayText, isRequired, options);
     }
 
-    public static ConsoleCheckbox Checkbox(string displayText, bool multiselect, params string[] options)
+    public static ConsoleCheckbox Checkbox(string displayText, params string[] options)
     {
-        return new ConsoleCheckbox(displayText, true, true, multiselect, options);
-    }
-
-    public static ConsoleCheckbox Checkbox(string displayText, bool multiselect, bool selectFirst, params string[] options)
-    {
-        return new ConsoleCheckbox(displayText, selectFirst,true, multiselect, options);
+        return ConsoleCheckbox.Create(displayText, false, options);
     }
 }
 
@@ -30,28 +26,32 @@ public class ConsoleCheckbox
     private ConsoleKey _key;
     private ConsoleKey _prevKey;
 
-    public ConsoleCheckbox(string displayText, bool selectFirst = false, params string[] options)
+    public static ConsoleCheckbox Create(string displayText, bool isRequired, params string[] options) => new(displayText, isRequired, options);
+    public static ConsoleCheckbox Create(string displayText, params string[] options) 
+        => new(displayText, true, options);
+    private ConsoleCheckbox(string displayText, params string[] options)
     {
-        _multiSelect = false;
-        _required = true;
+        _multiSelect = true;
+        _required = false;
         _options = [];
         _displayText = displayText;
-        Init(selectFirst, options);
+        Init(options);
     }
 
-    public ConsoleCheckbox(string displayText, bool multiMode, bool required, bool selectFirst = false, params string[] options)
+    private ConsoleCheckbox(string displayText, bool required, params string[] options)
     {
-        _multiSelect = multiMode;
         _required = required;
+        _multiSelect = true;
         _options = [];
         _displayText = displayText;
-        Init(selectFirst, options);
+        Init(options);
     }
 
-    private void Init(bool selectFirst, string[] options)
+    private void Init(string[] options)
     {
+        System.Console.OutputEncoding = System.Text.Encoding.UTF8;
         _hoveredIndex = 0;
-        _selectedIndex = selectFirst ? 0 : -1;
+        _selectedIndex = -1;
         _error = false;
 
         _options = [];
@@ -62,20 +62,14 @@ public class ConsoleCheckbox
 
     private CheckboxReturn[] ReturnData()
     {
-        var list = new List<CheckboxReturn>();
-        foreach (var option in _options)
-        {
-            if (option.Selected) list.Add(option.GetData());
-        }
-
-        return list.ToArray();
+        return _options.Where(option => option.Selected).Select(option => option.GetData()).ToArray();
     }
 
     public void Show()
     {
         System.Console.Clear();
         System.Console.WriteLine(_displayText);
-        System.Console.WriteLine("(Use Arrow keys to navigate up and down, Space bar to select and Enter to submit)");
+        System.Console.WriteLine("(Use Arrow keys to navigate up and down, Space bar to select and Enter to submit)" + Environment.NewLine);
 
         foreach (var option in _options)
         {
@@ -83,7 +77,7 @@ public class ConsoleCheckbox
                 ? (option.Hovered ? ConsoleColor.DarkGreen : ConsoleColor.Green)
                 : (option.Hovered ? ConsoleColor.White : ConsoleColor.DarkGray);
 
-            System.Console.WriteLine((option.Selected ? "(*) " : "( ) ") + $"{option.Option}");
+            System.Console.WriteLine((option.Selected ? "■ " : "□ ") + $"{option.Option}");
         }
         System.Console.ResetColor();
         if (_error) System.Console.WriteLine("\nAt least one item has to be selected!");
