@@ -2,6 +2,9 @@
 using ConsoleR.Loading;
 using Console = ConsoleR.Console;
 
+Console.Alert($"Welcome to ConsoleR Test Application {Environment.NewLine} This is a tutorial to show features of this library", " ConsoleR ", MessageType.Success);
+Console.ReadKey("\nPress any key to continue");
+Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
 
 var spinner = new Spinner();
 await spinner.Start(() =>
@@ -27,7 +30,8 @@ await spinner2.Start(() =>
     spinner2.SetText("Almost done...");
 }, "Restart app");
 
-Console.AsciiArt("ConsoleR", ConsoleColor.Green);
+Console.AsciiArt("NEXT TOP ", ConsoleColor.Green);
+Console.AsciiArt("ConsoleR", ConsoleColor.Cyan);
 Console.WriteLine("\nPress any key to continue");
 Console.ReadKey();
 
@@ -72,7 +76,7 @@ for (int i = 0; i < selectedItems.Length; i++)
     Console.WriteLine(plugin.Option, (ConsoleColor)i);
 }
 
-Console.ReadKey("Press any key");
+Console.ReadKey("Press any key" + Environment.NewLine);
 
 // Table
 Person[] people2 = [
@@ -84,6 +88,7 @@ Person[] people2 = [
 Console.Table(people2, ConsoleColor.DarkCyan);
 
 Console.ReadKey("Press any key to exit");
+
 ConsoleColor GetFrameworkColor(string framework)
 {
     return framework switch

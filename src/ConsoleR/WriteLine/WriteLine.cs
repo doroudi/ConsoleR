@@ -10,7 +10,6 @@ public static partial class Console
     {
         System.Console.SetCursorPosition(0, 0);
         Clear();
-        
     }
 
     public static void WriteBool(bool value, string? trueMessage = null, string? falseMessage = null)
@@ -50,7 +49,7 @@ public static partial class Console
     public static void Info(string message, bool showIcon = false)
     {
         if (showIcon) {
-            message = (ConsoleHelpers.IsLegacy ? "i " :"❕") + message;
+            message = (ConsoleHelpers.IsLegacy ? "i " :"ℹ️ ") + message;
         }
         DoWriteLine(message, ConsoleColor.Blue);
     }

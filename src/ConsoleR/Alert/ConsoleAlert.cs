@@ -1,14 +1,20 @@
 namespace ConsoleR;
 
 public static partial class Console {
-    public static void Alert(string message, string title, MessageType messageType = MessageType.None) {
+    public static void Alert(string message, string title, MessageType messageType = MessageType.None)
+    {
         ConsoleAlert.Create(message, title, messageType);
+    }
+    public static void Alert(string message, MessageType messageType = MessageType.None)
+    {
+        ConsoleAlert.Create(message, "", messageType);
     }
 }
 
 internal static class ConsoleAlert {
-    public static void Create(string message, string title, MessageType type = MessageType.Info) 
+    public static void Create(string message, string? title = null, MessageType type = MessageType.Info)
     {
+        System.Console.OutputEncoding = System.Text.Encoding.UTF8;
         var splitted = message.Split(Environment.NewLine);
         var totalMaxLength = splitted.Select(x => x.Length).Max();
         var stringLength = totalMaxLength + 4; // 4 for borders and spaces around
@@ -29,18 +35,21 @@ internal static class ConsoleAlert {
 
     private static string BuildHeader(string title, int maxLength)
     {
-
         int count = (int) Math.Ceiling((decimal)((maxLength - 2 - title.Length)/2));
         var isBalanced = count * 2 + title.Length >= (maxLength - 2) ;
 
-        var str = $"┌{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1: count)}┐";
-
-        return str;
-    }
+        if(ConsoleHelpers.IsLegacy)
+            return $"┌{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1: count)}┐";
+        else
+            return $"╭{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1 : count)}╮";
+    }   
     
     private static string BuildFooter(int maxLength)
     {
-        return $"└{'─'.Repeat(maxLength - 2)}┘";
+        if (ConsoleHelpers.IsLegacy)
+            return $"└{'─'.Repeat(maxLength - 2)}┘";
+        else
+            return $"╰{'─'.Repeat(maxLength - 2)}╯";
     }
 
     private static List<string> WrapText(string text, int maxLength)

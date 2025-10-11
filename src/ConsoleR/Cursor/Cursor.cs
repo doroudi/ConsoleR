@@ -1,4 +1,4 @@
-namespace ConsoleR.Cursor;
+namespace ConsoleR;
 
 public static partial class Console
 {
@@ -15,5 +15,7 @@ public static partial class Console
         public static void MoveStart() => MoveCursorToStart();
         public static void MoveBack(int steps = 1) => MoveCursorBack(steps);
         public static void MoveNext(int steps = 1) => MoveCursorForward(steps);
+        public static void SetPosition(int left, int top) => System.Console.SetCursorPosition(left, top);
+        public static (int Left, int Top) GetPosition() => (System.Console.CursorLeft, System.Console.CursorTop);
     }
 }
