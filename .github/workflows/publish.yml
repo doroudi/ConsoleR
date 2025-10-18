@@ -20,6 +20,9 @@ defaults:
 jobs:
   create_nuget:
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v3
         with:
