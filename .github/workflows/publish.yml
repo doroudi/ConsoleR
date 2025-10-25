@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write   # needed for creating tags/releases
+  contents: write # needed for creating tags/releases
 
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0   # fetch full history for tags
+          fetch-depth: 0 # fetch full history for tags
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -53,17 +53,18 @@ jobs:
 
           echo "new_version=$newVersion" >> $env:GITHUB_OUTPUT
           echo "tag=v$newVersion" >> $env:GITHUB_OUTPUT
-            - name: Build
-              run: dotnet build src/ConsoleR/ConsoleR.csproj --configuration Release
 
-            - name: Pack
-              run: dotnet pack src/ConsoleR/ConsoleR.csproj --configuration Release /p:Version=${{ steps.version.outputs.new_version }} --output ${{ env.NuGetDirectory }}
+      - name: Build
+        run: dotnet build src/ConsoleR/ConsoleR.csproj --configuration Release
 
-            - uses: actions/upload-artifact@v4
-              with:
-                name: nuget
-                if-no-files-found: error
-                path: ${{ env.NuGetDirectory }}/*.nupkg
+      - name: Pack
+        run: dotnet pack src/ConsoleR/ConsoleR.csproj --configuration Release /p:Version=${{ steps.version.outputs.new_version }} --output ${{ env.NuGetDirectory }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget
+          if-no-files-found: error
+          path: ${{ env.NuGetDirectory }}/*.nupkg
 
   validate_nuget:
     runs-on: ubuntu-latest
