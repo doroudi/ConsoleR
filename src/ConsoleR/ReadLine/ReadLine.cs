@@ -7,40 +7,37 @@ public partial class Console
         return System.Console.ReadKey();
     }
 
+    public static ConsoleKeyInfo ReadKey(bool intercept)
+    {
+        return System.Console.ReadKey(intercept);
+    }
+
     public static ConsoleKeyInfo ReadKey(string message)
     {
         Write(message);
         return System.Console.ReadKey();
     }
 
-    public static string? ReadLine(string? defaultValue = null)
-    {
-        if (string.IsNullOrEmpty(defaultValue))
-            return System.Console.ReadLine();
-
-        return ReadWithEditableValue(defaultValue);
-    }
-
-    public static string? ReadLine(string? prompt, string? defaultValue = null)
+    public static string? ReadLine(string? prompt, string? defaultValue = null, ConsoleColor? color = null)
     {
         System.Console.Write(prompt);
         if (string.IsNullOrEmpty(defaultValue))
             return System.Console.ReadLine();
-        return ReadWithEditableValue(defaultValue);
+        return ReadWithEditableValue(defaultValue, color);
     }
 
-    public static string? Read(string? prompt, string? defaultValue = null)
+    public static string? Read(string? prompt, string? defaultValue = null, ConsoleColor? color = null)
     {
         System.Console.Write(prompt);
         if(string.IsNullOrEmpty(defaultValue))
             return System.Console.ReadLine();
     
-        return ReadWithEditableValue(defaultValue);
+        return ReadWithEditableValue(defaultValue, color);
     }
 
 
     #region PrivateMethods
-    private static string ReadWithEditableValue(string defaultValue)
+    private static string ReadWithEditableValue(string defaultValue, ConsoleColor? color = null)
     {
         int pos = System.Console.CursorLeft;
         Write(defaultValue, ConsoleColor.DarkGray);
@@ -51,6 +48,8 @@ public partial class Console
             chars.AddRange(defaultValue.ToCharArray());
         }
 
+        if(color is not null)
+            SetColor(color.Value);
         while (true)
         {
             info = System.Console.ReadKey(true);
@@ -69,6 +68,8 @@ public partial class Console
                 chars.Add(info.KeyChar);
             }
         }
+        if(color is not null)
+            ResetColor();
         return new string([.. chars]);
     }
     #endregion

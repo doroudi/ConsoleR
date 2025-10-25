@@ -2,6 +2,11 @@
 using ConsoleR.Loading;
 using Console = ConsoleR.Console;
 
+var content = Console.ReadInBox("You:");
+Console.Info($"Bot: {content}");
+content = Console.ReadInBox("You:", ConsoleColor.Yellow);
+Console.WriteLine(content);
+
 Console.Alert($"Welcome to ConsoleR Test Application {Environment.NewLine} This is a tutorial to show features of this library", " ConsoleR ", MessageType.Success);
 Console.ReadKey("\nPress any key to continue");
 Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
