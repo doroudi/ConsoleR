@@ -34,6 +34,7 @@ jobs:
       - name: Determine next version
         id: version
         run: |
+          git fetch --tags
           $lastTag = git describe --tags --abbrev=0 2>$null
           if (-not $lastTag) { $lastTag = "v0.0.0" }
           Write-Host "Last tag: $lastTag"
@@ -52,18 +53,17 @@ jobs:
 
           echo "new_version=$newVersion" >> $env:GITHUB_OUTPUT
           echo "tag=v$newVersion" >> $env:GITHUB_OUTPUT
+            - name: Build
+              run: dotnet build src/ConsoleR/ConsoleR.csproj --configuration Release
 
-      - name: Build
-        run: dotnet build src/ConsoleR/ConsoleR.csproj --configuration Release
+            - name: Pack
+              run: dotnet pack src/ConsoleR/ConsoleR.csproj --configuration Release /p:Version=${{ steps.version.outputs.new_version }} --output ${{ env.NuGetDirectory }}
 
-      - name: Pack
-        run: dotnet pack src/ConsoleR/ConsoleR.csproj --configuration Release /p:Version=${{ steps.version.outputs.new_version }} --output ${{ env.NuGetDirectory }}
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nuget
-          if-no-files-found: error
-          path: ${{ env.NuGetDirectory }}/*.nupkg
+            - uses: actions/upload-artifact@v4
+              with:
+                name: nuget
+                if-no-files-found: error
+                path: ${{ env.NuGetDirectory }}/*.nupkg
 
   validate_nuget:
     runs-on: ubuntu-latest
