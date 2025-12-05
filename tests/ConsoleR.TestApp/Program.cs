@@ -1,16 +1,41 @@
 ﻿using ConsoleR;
 using ConsoleR.Loading;
+using System.Drawing;
 using Console = ConsoleR.Console;
+
+var outputText = "Welcome to ConsoleR!";
+
+Console.AsciiArt("Output Color", ConsoleColor.Yellow);
+Thread.Sleep(750);
+Console.Write("Hello ", "#FFCC00");
+Console.Write("World", ConsoleColor.Green);
+Console.Write("; \n", Color.BlueViolet);
+Console.WriteLine(outputText);
+Console.WriteLine(outputText.ToString(), Color.Magenta);
+Console.WriteLine(outputText.ToString(), Color.Cyan);
+Console.WriteLine(outputText.ToString(), Color.GreenYellow);
+Console.WriteLine(outputText.ToString(), "#FFCC00");
+Console.WriteLine(outputText.ToString(), "#FF0000");
+Console.WriteLine(outputText.ToString(), ConsoleColor.DarkGreen);
+Console.WriteLine(outputText.ToString(), Color.Tan);
+Console.ReadKey("Press any key to continue");
+Console.Clear();
+Console.AsciiArt("ALERT", ConsoleColor.Green);
+Thread.Sleep(750);
+Console.Alert($"Welcome to ConsoleR Test Application {Environment.NewLine} This is a tutorial to show features of this library", " ConsoleR ", MessageType.Info);
+Console.Alert($"This is Warning", " Warning ", MessageType.Warning);
+Console.Alert($"Error message goes here", " ERROR ", MessageType.Error);
+Console.Alert($"It can be a successfull message also :)", "", MessageType.Success);
+Console.ReadKey("\nPress any key to continue");
+Console.Clear();
+Console.AsciiArt("MENU", ConsoleColor.Green);
+Thread.Sleep(750);
+Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
+
 
 var content = Console.ReadInBox("You:");
 Console.Info($"Bot: {content}");
 content = Console.ReadInBox("You:", ConsoleColor.Yellow);
-Console.WriteLine(content);
-
-Console.Alert($"Welcome to ConsoleR Test Application {Environment.NewLine} This is a tutorial to show features of this library", " ConsoleR ", MessageType.Success);
-Console.ReadKey("\nPress any key to continue");
-Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
-
 var spinner = new Spinner();
 await spinner.Start(() =>
 {

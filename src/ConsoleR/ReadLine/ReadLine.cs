@@ -18,6 +18,11 @@ public partial class Console
         return System.Console.ReadKey();
     }
 
+    public static string? ReadLine()
+    {
+        return System.Console.ReadLine();
+    }
+
     public static string? ReadLine(string? prompt, string? defaultValue = null, ConsoleColor? color = null)
     {
         System.Console.Write(prompt);

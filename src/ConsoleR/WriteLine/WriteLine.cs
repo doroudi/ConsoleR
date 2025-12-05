@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace ConsoleR;
 
 public static partial class Console
@@ -30,6 +32,20 @@ public static partial class Console
         DoWriteLine(message, color);
     }
 
+    public static void WriteLine(string message, Color? color = null)
+    {
+        DoWriteLine(message, color);
+    }
+
+    public static void WriteLine(string message)
+    {
+        System.Console.WriteLine(message);
+    }
+
+    public static void WriteLine(string message, string color)
+    {
+        DoWriteLine(message, color: color);
+    }
     public static void Error(string message, bool showIcon = false)
     {
         if (showIcon) {
@@ -62,15 +78,28 @@ public static partial class Console
         DoWriteLine(message, ConsoleColor.Yellow);
     }
 
-
     private static void DoWriteLine(string message, ConsoleColor? color = null)
     {
         if (color.HasValue)
-        {
             System.Console.ForegroundColor = color.Value;
-        }
 
         System.Console.WriteLine(message);
         System.Console.ResetColor();
+    }
+
+    private static void DoWriteLine(string message, Color? color = null)
+    {
+        if (color.HasValue)
+            message = ConsoleHelpers.GetColorfulText(message, color.Value);
+
+        System.Console.WriteLine(message);
+    }
+
+    private static void DoWriteLine(string message, string? color = null)
+    {
+        if (!string.IsNullOrEmpty(color))
+            message = ConsoleHelpers.GetColorfulText(message, color);
+
+        System.Console.WriteLine(message);
     }
 }

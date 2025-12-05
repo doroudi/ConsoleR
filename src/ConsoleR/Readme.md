@@ -4,6 +4,7 @@ ConsoleR is set of utilities to make awesome console apps in .Net
 
 ## Features
 
+- Colourful output
 - Menu
 - CheckBox
 - AsciiArt
