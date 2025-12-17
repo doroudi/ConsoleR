@@ -1,20 +1,23 @@
 namespace ConsoleR;
 
 public partial class Console {
-    public static void Table<T>(IEnumerable<T> data, ConsoleColor? borderColor = null) {
-        var properties = typeof(T).GetProperties();
+    public static void Table<T>(IEnumerable<T> data, ConsoleColor? borderColor = null, int? maxColumnLength = null, List<string>? ignoredColumns = null) {
+        var properties = typeof(T).GetProperties().Where(x => !ignoredColumns?.Contains(x.Name) ?? true);
         var headers = properties.Select(p => p.Name).ToArray();
         var values = data.Select(d => properties.Select(p => p.GetValue(d)).ToArray()).ToArray();
-        PrintTable(headers, values, borderColor);
+        PrintTable(headers, values, borderColor, maxColumnLength, ignoredColumns);
     }
 
-    private static void PrintTable(string[] headers, object[][] values, ConsoleColor? borderColor = null) {
+    private static void PrintTable(string[] headers, object[][] values, ConsoleColor? borderColor = null, int? maxColumnLength = null, List<string>? ignoredColumns = null) {
         var columnWidths = new int[headers.Length];
         for (int i = 0; i < headers.Length; i++) {
             columnWidths[i] = headers[i].Length;
             for (int j = 0; j < values.Length; j++) {
                 var value = values[j][i].ToString();
-                columnWidths[i] = Math.Max(columnWidths[i], value.Length);
+                if (maxColumnLength != null && value.Length > maxColumnLength)
+                    values[j][i] = value[..maxColumnLength.Value] + "..";
+
+                columnWidths[i] = Math.Max(columnWidths[i], values[j][i].ToString().Length);
             }
         }
 

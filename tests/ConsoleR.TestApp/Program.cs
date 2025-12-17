@@ -1,4 +1,5 @@
-﻿using ConsoleR;
+﻿
+using ConsoleR;
 using ConsoleR.Loading;
 using System.Drawing;
 using Console = ConsoleR.Console;
@@ -110,12 +111,12 @@ Console.ReadKey("Press any key" + Environment.NewLine);
 
 // Table
 Person[] people2 = [
-    new Person("Saeid Doroudi",30, "Tehran"),
-    new Person("Saman", 25, "Marand"),
-    new Person("Alice", 35, "Zurich"),
-    new Person("Alireza", 40, "Tabriz")
+    new Person("Saeid Doroudi",30, "Dresden", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
+    new Person("Saman", 25, "Marand", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
+    new Person("Alice", 35, "Zurich", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
+    new Person("Alireza", 40, "Tabriz", "Lorem Ipsum is simply dummy text of the printing and typesetting industry")
 ];
-Console.Table(people2, ConsoleColor.DarkCyan);
+Console.Table(people2, ConsoleColor.DarkCyan, ignoredColumns: [nameof(Person.Age)], maxColumnLength: 25);
 
 Console.ReadKey("Press any key to exit");
 
@@ -134,4 +135,4 @@ ConsoleColor GetFrameworkColor(string framework)
 
 
 
-record Person(string Name, int Age, string City);
+record Person(string Name, int Age, string City, string Description);
