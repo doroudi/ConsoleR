@@ -14,4 +14,10 @@ public static class StringExtensions
 
         return input;
     }
+
+    public static string RemoveColorTags(this string input)
+    {
+        var regex = new System.Text.RegularExpressions.Regex(@"\[(.*?)\]");
+        return regex.Replace(input, string.Empty);
+    }
 }

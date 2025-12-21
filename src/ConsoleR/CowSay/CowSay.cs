@@ -5,10 +5,10 @@ public partial class Console
     public static void CowSay(string message, string cowEye = "oo")
     {
         var lines = message.Split(['\n'], StringSplitOptions.RemoveEmptyEntries);
-        string output;
+        string output = string.Empty;
         if (lines.Count() == 1)
             output = FormatSingleLine(message);
-        else
+        else if(lines.Count() > 1)
             output = FormatMultiLine(message);
 
         if (cowEye.Length < 2)
@@ -27,7 +27,7 @@ public partial class Console
 
     private static string FormatSingleLine(string message)
     {
-        var len = message.Length;
+        var len = message.RemoveColorTags().Length;
         string formatted =
 $"  {'─'.Repeat(len)} \n" +
 $"< {message} > \n" +
@@ -39,7 +39,7 @@ $"  {'─'.Repeat(len)}";
     private static string FormatMultiLine(string message)
     {
         var lines = message.Split(['\n'], StringSplitOptions.RemoveEmptyEntries);
-        var maxLen = lines.Max(x => x.Length);
+        var maxLen = lines.Select(x=>x.RemoveColorTags()).Max(x => x.Length);
         string output = $"  {'─'.Repeat(maxLen)} \n";
         var index = 0;
         foreach (var line in lines)

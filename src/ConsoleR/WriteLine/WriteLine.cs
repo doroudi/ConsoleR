@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace ConsoleR;
 
@@ -39,7 +40,7 @@ public static partial class Console
 
     public static void WriteLine(string message)
     {
-        System.Console.WriteLine(message);
+        WriteLineFormatted(message);
     }
 
     public static void WriteLine(string message, string color)
@@ -83,16 +84,17 @@ public static partial class Console
         if (color.HasValue)
             System.Console.ForegroundColor = color.Value;
 
-        System.Console.WriteLine(message);
+        WriteLineFormatted(message);
         System.Console.ResetColor();
     }
 
+    
     private static void DoWriteLine(string message, Color? color = null)
     {
         if (color.HasValue)
             message = ConsoleHelpers.GetColorfulText(message, color.Value);
 
-        System.Console.WriteLine(message);
+        WriteLineFormatted(message);
     }
 
     private static void DoWriteLine(string message, string? color = null)
@@ -100,6 +102,42 @@ public static partial class Console
         if (!string.IsNullOrEmpty(color))
             message = ConsoleHelpers.GetColorfulText(message, color);
 
-        System.Console.WriteLine(message);
+        WriteLineFormatted(message);
     }
+
+    static void WriteLineFormatted(string input)
+    {
+        var regex = new Regex(@"\[(?<colors>[^\]]+)\](?<text>.*?)\[/\]",
+            RegexOptions.Singleline);
+
+        int lastIndex = 0;
+
+        foreach (Match match in regex.Matches(input))
+        {
+            System.Console.Write(input[lastIndex..match.Index]);
+
+            var colorParts = match.Groups["colors"].Value.Split(':');
+
+            if (Enum.TryParse(colorParts[0], true, out ConsoleColor fg))
+                ForegroundColor = fg;
+
+            if (colorParts.Length > 1 &&
+                Enum.TryParse(colorParts[1], true, out ConsoleColor bg))
+                BackgroundColor = bg;
+
+            System.Console.Write(match.Groups["text"].Value);
+
+            ResetColor();
+
+            lastIndex = match.Index + match.Length;
+        }
+
+        if (lastIndex < input.Length)
+        {
+            Write(input[lastIndex..]);
+        }
+
+        Write(Environment.NewLine);
+    }
+
 }
