@@ -16,7 +16,7 @@ internal static class ConsoleAlert {
     {
         System.Console.OutputEncoding = System.Text.Encoding.UTF8;
         var splitted = message.Split(Environment.NewLine);
-        var totalMaxLength = splitted.Select(x => x.Length).Max();
+        var totalMaxLength = splitted.Max(x => x.Length);
         var stringLength = totalMaxLength + 4; // 4 for borders and spaces around
         var maxLength = Math.Min(stringLength, System.Console.WindowWidth); // Set a maximum length for each line
         var wrappedMessage = WrapText(message, maxLength - 4); // 4 for borders and spaces around

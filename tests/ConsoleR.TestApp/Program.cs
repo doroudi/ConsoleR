@@ -4,8 +4,14 @@ using ConsoleR.Loading;
 using System.Drawing;
 using Console = ConsoleR.Console;
 
+Console.AsciiArt("COW SAY", ConsoleColor.Magenta);
+Thread.Sleep(750);
+Console.Clear();
 var outputText = "Welcome to ConsoleR!";
-
+Console.CowSay(outputText);
+Console.CowSay("Hello\nThis is multiline output!\nIs it looks good?","××");
+Console.ReadLine();
+Console.Clear();
 Console.AsciiArt("Output Color", ConsoleColor.Yellow);
 Thread.Sleep(750);
 Console.Write("Hello ", "#FFCC00");
