@@ -29,6 +29,7 @@ NuGet\Install-Package Doroudi.ConsoleR
 
 ```csharp
 using ConsoleR;
+using ConsoleR.Menu.Models;
 using Console = ConsoleR.Console;
 
 // AsciiArt
@@ -54,6 +55,29 @@ string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"]
 var selectedItem = Console.Menu("Please Select One beloved frontend framework", frontEndFrameworks).Select();
 Console.Success("Your choice is: \n\n");
 Console.AsciiArt(frontEndFrameworks[selectedItem], ConsoleColor.Yellow);
+
+// Menus with more options than the console window is high are scrollable:
+// only the options that fit are shown, the box follows the selection while navigating.
+string[] languages = ["C#", "Java", "Python", "JavaScript", "TypeScript", "Go", "Rust", "C++", "Kotlin", "Ruby",
+    "Swift", "PHP", "Dart", "Elixir", "Scala", "Haskell", "F#", "Clojure", "Lua", "Perl", "R", "Julia", "Zig", "Nim"];
+
+// The box is sized to the window height and scrolls when needed
+var language = Console.Menu("Select your favorite programming language:", languages).Select();
+
+// Or keep the box at a fixed size, five options at a time
+var framework = Console.Menu("Select one frontend framework:", 5, frontEndFrameworks).Select();
+
+// Everything is configurable through settings
+var settings = new MenuSettings
+{
+    DisplayText = "Select a plugin:",
+    VisibleItems = 5,          // null = as many options as fit into the window
+    ShowScrollBox = true,      // null = box only when the options do not fit
+    WrapAround = true,
+    SelectedColor = ConsoleColor.Cyan,
+    OptionColor = ConsoleColor.Gray
+};
+var selectedPlugin = Console.Menu(settings, ["Linter", "Formatter", "Test runner", "Bundler", "Dev server", "Docs"]).Select();
 
 
 // Checkbox

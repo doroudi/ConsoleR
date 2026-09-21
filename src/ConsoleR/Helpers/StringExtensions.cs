@@ -20,4 +20,9 @@ public static class StringExtensions
         var regex = new System.Text.RegularExpressions.Regex(@"\[(.*?)\]");
         return regex.Replace(input, string.Empty);
     }
+
+    public static bool IsEndOfLine(this string input)
+    {
+        return input == "\r\n" || input == "\r" || input == "\n";
+    }
 }

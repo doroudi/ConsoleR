@@ -1,4 +1,4 @@
-﻿
+
 using ConsoleR;
 using ConsoleR.Loading;
 using System.Drawing;
@@ -42,7 +42,11 @@ Console.ReadKey("\nPress any key to continue");
 Console.Clear();
 Console.AsciiArt("MENU", ConsoleColor.Green);
 Thread.Sleep(750);
-Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
+
+// A long list: only the options that fit into the window are shown, the box scrolls with the selection.
+string[] languages = ["C#", "Java", "Python", "JavaScript", "TypeScript", "Go", "Rust", "C++", "Kotlin", "Ruby", "Swift", "PHP", "Dart", "Elixir", "Scala", "Haskell", "F#", "Clojure", "Lua", "Perl", "R", "Julia", "Zig", "Nim"];
+var selectedLanguage = Console.Menu("Select your favorite programming language:", languages).Select();
+Console.Info($"You selected {languages[selectedLanguage]}", showIcon: true);
 
 
 var content = Console.ReadInBox("You:");
@@ -77,8 +81,9 @@ Console.AsciiArt("ConsoleR", ConsoleColor.Cyan);
 Console.WriteLine("\nPress any key to continue");
 Console.ReadKey();
 
-string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"];
-var selectedItem = Console.Menu("Please Select One beloved frontend framework", true, frontEndFrameworks).Select();
+string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "Svelte", "Solid", "Qwik", "Astro", "VanillaJs"];
+// A view box that shows five options at a time, the numbers keep the position inside the whole list.
+var selectedItem = Console.Menu("Please Select One beloved frontend framework", 5, frontEndFrameworks).Select();
 
 Console.AsciiArt(frontEndFrameworks[selectedItem], GetFrameworkColor(frontEndFrameworks[selectedItem]));
 

@@ -60,7 +60,7 @@ internal static class ConsoleAlert {
 
         foreach (var word in words)
         {
-            if ((currentLine + word).Length > maxLength || word == Environment.NewLine)
+            if ((currentLine + word).Length > maxLength || word.IsEndOfLine())
             {
                 lines.Add(currentLine);
                 currentLine = word.Replace(Environment.NewLine, "");
