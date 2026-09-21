@@ -48,7 +48,7 @@ Console.ReadKey("\nPress any key to continue");
 Console.Clear();
 Console.AsciiArt("MENU", ConsoleColor.Green);
 Thread.Sleep(750);
-Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby").Select();
+Console.Menu("Select your favorite programming language:", "C#", "Java", "Python", "JavaScript", "Go", "Rust", "C++", "Kotlin", "Ruby", "Swift", "PHP", "Dart", "Elixir", "Scala", "Haskell").Select();
 
 
 var content = Console.ReadInBox("You:");
@@ -84,7 +84,8 @@ Console.WriteLine("\nPress any key to continue");
 Console.ReadKey();
 
 string[] frontEndFrameworks = ["Blazor", "Angular", "Vue", "React", "VanillaJs"];
-var selectedItem = Console.Menu("Please Select One beloved frontend framework", true, frontEndFrameworks).Select();
+// Menus that do not fit into the window scroll inside a box, a fixed view box is one argument away.
+var selectedItem = Console.Menu("Please Select One beloved frontend framework", 5, frontEndFrameworks).Select();
 
 Console.AsciiArt(frontEndFrameworks[selectedItem], GetFrameworkColor(frontEndFrameworks[selectedItem]));
 
