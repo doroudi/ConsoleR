@@ -9,6 +9,12 @@ internal static class ConsoleHelpers {
     private const string Sequence_Code_Foreground_Default = "\u001b[39m";
     private const string Sequence_Code_Background_Default = "\u001b[49m";
 
+    /// <summary>Size assumed when the console window cannot be measured.</summary>
+    public const int FallbackWindowWidth = 80;
+
+    /// <summary>Height assumed when the console window cannot be measured.</summary>
+    public const int FallbackWindowHeight = 25;
+
 
     /// <summary>
     /// Check whether the console is running in a legacy mode. (legacy console is not supporting UTF-8 or UTF-16 encoding)
@@ -22,6 +28,82 @@ internal static class ConsoleHelpers {
     /// </summary>
     public static bool IsWindowsTerminal =>
         Environment.GetEnvironmentVariable("WT_SESSION") != null;
+
+    /// <summary>
+    /// Size of the console window, with a sane fallback for redirected output.
+    /// </summary>
+    public static (int Width, int Height) GetWindowSize() {
+        try {
+            var width = System.Console.WindowWidth;
+            var height = System.Console.WindowHeight;
+            if (width > 0 && height > 0) return (width, height);
+        }
+        catch (IOException) { }
+        catch (PlatformNotSupportedException) { }
+        catch (ArgumentOutOfRangeException) { }
+
+        return (FallbackWindowWidth, FallbackWindowHeight);
+    }
+
+    /// <summary>
+    /// Positioning the cursor requires a real, not redirected, output.
+    /// </summary>
+    public static bool CanPositionCursor() {
+        try {
+            return !System.Console.IsOutputRedirected;
+        }
+        catch (IOException) {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Breaks a text into lines that are not longer than the given width.
+    /// </summary>
+    public static List<string> WrapText(string text, int width) {
+        var lines = new List<string>();
+        if (width < 1) width = 1;
+
+        var current = new System.Text.StringBuilder();
+
+        foreach (var word in text.Split(' ')) {
+            var candidate = current.Length == 0 ? word : current + " " + word;
+
+            if (candidate.Length <= width) {
+                current.Clear();
+                current.Append(candidate);
+                continue;
+            }
+
+            if (current.Length > 0) {
+                lines.Add(current.ToString());
+                current.Clear();
+            }
+
+            // A single word can be longer than a whole line, break it apart.
+            var remaining = word;
+            while (remaining.Length > width) {
+                lines.Add(remaining.Substring(0, width));
+                remaining = remaining.Substring(width);
+            }
+
+            current.Append(remaining);
+        }
+
+        if (current.Length > 0 || lines.Count == 0) lines.Add(current.ToString());
+
+        return lines;
+    }
+
+    /// <summary>
+    /// Sets the colors of the console. A color that is <c>null</c> falls back to the default color of the console.
+    /// </summary>
+    public static void ApplyColors(ConsoleColor? foreground, ConsoleColor? background = null) {
+        System.Console.ResetColor();
+
+        if (foreground.HasValue) System.Console.ForegroundColor = foreground.Value;
+        if (background.HasValue) System.Console.BackgroundColor = background.Value;
+    }
 
     /// <summary>
     /// Set the console foreground color using RGB values.

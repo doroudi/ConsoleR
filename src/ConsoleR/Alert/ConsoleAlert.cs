@@ -12,71 +12,77 @@ public static partial class Console {
 }
 
 internal static class ConsoleAlert {
+    /// <summary>Columns the box spends on its borders and the spaces around the message.</summary>
+    private const int BoxPadding = 4;
+
     public static void Create(string message, string? title = null, MessageType type = MessageType.Info)
     {
         System.Console.OutputEncoding = System.Text.Encoding.UTF8;
-        var splitted = message.Split(Environment.NewLine);
-        var totalMaxLength = splitted.Max(x => x.Length);
-        var stringLength = totalMaxLength + 4; // 4 for borders and spaces around
-        var maxLength = Math.Min(stringLength, System.Console.WindowWidth); // Set a maximum length for each line
-        var wrappedMessage = WrapText(message, maxLength - 4); // 4 for borders and spaces around
-        
 
-        title ??= "";
-        Console.WriteLine(BuildHeader(title, maxLength), (ConsoleColor)type);
-        foreach (var line in wrappedMessage)
+        var (windowWidth, _) = ConsoleHelpers.GetWindowSize();
+        var color = (ConsoleColor)type;
+
+        // The message is wrapped first: the longest line of it decides how wide the box becomes and no
+        // line can be wider than the window.
+        var lines = WrapText(message, Math.Max(1, windowWidth - BoxPadding));
+
+        var textWidth = 0;
+        foreach (var line in lines) textWidth = Math.Max(textWidth, line.Length);
+
+        var maxLength = Math.Min(textWidth + BoxPadding, windowWidth);
+        var innerWidth = Math.Max(1, maxLength - BoxPadding);
+
+        Console.WriteLine(BuildHeader(title ?? string.Empty, maxLength), color);
+        foreach (var line in lines)
         {
-            Console.Write("│", (ConsoleColor)type);
-            Console.Write($" {line.PadRight(maxLength - 4)} ");
-            Console.Write("│\n", (ConsoleColor)type);
+            Console.Write("│", color);
+            Console.Write($" {line.PadRight(innerWidth)} ");
+            Console.Write("│\n", color);
         }
-        Console.WriteLine(BuildFooter(maxLength), (ConsoleColor)type);
+        Console.WriteLine(BuildFooter(maxLength), color);
     }
 
-    private static string BuildHeader(string title, int maxLength)
+    /// <summary>
+    /// Lines of the message, a line break of any kind starts a new line of the box and a line that is
+    /// wider than the box is wrapped.
+    /// </summary>
+    private static List<string> WrapText(string? message, int maxLength)
     {
-        int count = (int) Math.Ceiling((decimal)((maxLength - 2 - title.Length)/2));
-        var isBalanced = count * 2 + title.Length >= (maxLength - 2) ;
-
-        if(ConsoleHelpers.IsLegacy)
-            return $"┌{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1: count)}┐";
-        else
-            return $"╭{'─'.Repeat(count)}{title}{'─'.Repeat(!isBalanced ? count + 1 : count)}╮";
-    }   
-    
-    private static string BuildFooter(int maxLength)
-    {
-        if (ConsoleHelpers.IsLegacy)
-            return $"└{'─'.Repeat(maxLength - 2)}┘";
-        else
-            return $"╰{'─'.Repeat(maxLength - 2)}╯";
-    }
-
-    private static List<string> WrapText(string text, int maxLength)
-    {
-        var words = text.Split(' ');
         var lines = new List<string>();
-        var currentLine = string.Empty;
+        var paragraphs = (message ?? string.Empty).Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
 
-        foreach (var word in words)
-        {
-            if ((currentLine + word).Length > maxLength || word.IsEndOfLine())
-            {
-                lines.Add(currentLine);
-                currentLine = word.Replace(Environment.NewLine, "");
-            }
-            else
-            {
-                currentLine += (currentLine.Length > 0 ? " " : "") + word;
-            }
-        }
-
-        if (currentLine.Length > 0)
-        {
-            lines.Add(currentLine);
-        }
+        foreach (var paragraph in paragraphs)
+            lines.AddRange(ConsoleHelpers.WrapText(paragraph, maxLength));
 
         return lines;
     }
 
+    /// <summary>Top border of the box with the title in it, exactly as wide as the box.</summary>
+    private static string BuildHeader(string title, int maxLength)
+    {
+        var left = ConsoleHelpers.IsLegacy ? "┌" : "╭";
+        var right = ConsoleHelpers.IsLegacy ? "┐" : "╮";
+        var fill = Math.Max(0, maxLength - 2);
+
+        var label = (title ?? string.Empty).Trim();
+        if (label.Length == 0) return left + '─'.Repeat(fill) + right;
+
+        // The title keeps a space on both sides and has to leave room for the corners.
+        if (label.Length > fill - 2) label = label.Substring(0, Math.Max(0, fill - 2));
+        label = $" {label} ";
+
+        var remaining = Math.Max(0, fill - label.Length);
+        var before = remaining / 2;
+
+        return left + '─'.Repeat(before) + label + '─'.Repeat(remaining - before) + right;
+    }
+
+    /// <summary>Bottom border of the box, exactly as wide as the box.</summary>
+    private static string BuildFooter(int maxLength)
+    {
+        var inner = Math.Max(0, maxLength - 2);
+        return ConsoleHelpers.IsLegacy
+            ? "└" + '─'.Repeat(inner) + "┘"
+            : "╰" + '─'.Repeat(inner) + "╯";
+    }
 }
