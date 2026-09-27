@@ -130,9 +130,6 @@ internal static class MenuRenderer
     /// <summary>Rows that stay free at the bottom of the window, so the cursor can leave the box.</summary>
     private const int BottomMarginRows = 1;
 
-    private const int FallbackWindowWidth = 80;
-    private const int FallbackWindowHeight = 25;
-
     private static bool IsLegacy => ConsoleHelpers.IsLegacy;
 
     private static string UpSign => IsLegacy ? "^" : "▲";
@@ -157,9 +154,9 @@ internal static class MenuRenderer
         var lines = new List<string>();
 
         foreach (var line in GetHeaderLines(displayText))
-            lines.AddRange(WrapText(line, width));
+            lines.AddRange(ConsoleHelpers.WrapText(line, width));
 
-        lines.AddRange(WrapText(showNumbers ? HintWithNumbers : Hint, width));
+        lines.AddRange(ConsoleHelpers.WrapText(showNumbers ? HintWithNumbers : Hint, width));
 
         return lines;
     }
@@ -167,75 +164,11 @@ internal static class MenuRenderer
     /// <summary>Width that the display text and the hint may use inside a window of the given width.</summary>
     public static int GetHeaderWidth(int windowWidth) => Math.Max(8, windowWidth - 1);
 
-    /// <summary>Breaks a text into lines that are not longer than the given width.</summary>
-    public static List<string> WrapText(string text, int width)
-    {
-        var lines = new List<string>();
-        if (width < 1) width = 1;
-
-        var current = new System.Text.StringBuilder();
-
-        foreach (var word in text.Split(' '))
-        {
-            var candidate = current.Length == 0 ? word : current + " " + word;
-
-            if (candidate.Length <= width)
-            {
-                current.Clear();
-                current.Append(candidate);
-                continue;
-            }
-
-            if (current.Length > 0)
-            {
-                lines.Add(current.ToString());
-                current.Clear();
-            }
-
-            // A single word can be longer than a whole line, break it apart.
-            var remaining = word;
-            while (remaining.Length > width)
-            {
-                lines.Add(remaining.Substring(0, width));
-                remaining = remaining.Substring(width);
-            }
-
-            current.Append(remaining);
-        }
-
-        if (current.Length > 0 || lines.Count == 0) lines.Add(current.ToString());
-
-        return lines;
-    }
-
     /// <summary>Size of the console window, with a sane fallback for redirected output.</summary>
-    public static (int Width, int Height) GetWindowSize()
-    {
-        try
-        {
-            var width = System.Console.WindowWidth;
-            var height = System.Console.WindowHeight;
-            if (width > 0 && height > 0) return (width, height);
-        }
-        catch (IOException) { }
-        catch (PlatformNotSupportedException) { }
-        catch (ArgumentOutOfRangeException) { }
-
-        return (FallbackWindowWidth, FallbackWindowHeight);
-    }
+    public static (int Width, int Height) GetWindowSize() => ConsoleHelpers.GetWindowSize();
 
     /// <summary>Positioning the cursor requires a real, not redirected, output.</summary>
-    public static bool CanPositionCursor()
-    {
-        try
-        {
-            return !System.Console.IsOutputRedirected;
-        }
-        catch (IOException)
-        {
-            return false;
-        }
-    }
+    public static bool CanPositionCursor() => ConsoleHelpers.CanPositionCursor();
 
     /// <summary>Text of a single option, including the selection sign and the optional number.</summary>
     public static string GetItemText(string optionText, int index, bool selected, bool showNumbers)
@@ -468,7 +401,7 @@ internal static class MenuRenderer
     /// </summary>
     public static int DrawableRowCount(int rowCount, int windowHeight)
     {
-        if (windowHeight <= 0) windowHeight = FallbackWindowHeight;
+        if (windowHeight <= 0) windowHeight = ConsoleHelpers.FallbackWindowHeight;
         return Math.Max(0, Math.Min(rowCount, windowHeight));
     }
 

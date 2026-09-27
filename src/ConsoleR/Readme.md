@@ -12,11 +12,14 @@ ConsoleR is set of utilities to make awesome console apps in .Net
 - Password
 - Alert
 - Table
+- Chat
 
 ### How To Use
 
 ```csharp
+using System.Text;
 using ConsoleR;
+using ConsoleR.Chat.Models;
 using ConsoleR.Loading;
 using System.Drawing;
 using Console = ConsoleR.Console;
@@ -24,6 +27,9 @@ using Console = ConsoleR.Console;
 var outputText = "Welcome to ConsoleR!";
 
 Console.AsciiArt("Output Color", ConsoleColor.Yellow);
+// The outline can be filled or get a shadow that falls to the bottom right
+Console.AsciiArt("Output Color", AsciiArtStyle.Filled, ConsoleColor.Yellow);
+Console.AsciiArt("Output Color", AsciiArtStyle.Shadow, ConsoleColor.Cyan, ConsoleColor.DarkCyan);
 Thread.Sleep(750);
 Console.Write("Hello ", "#FFCC00");
 Console.Write("World", ConsoleColor.Green);
@@ -54,6 +60,23 @@ Console.Menu("Select your favorite programming language:", "C#", "Java", "Python
 var content = Console.ReadInBox("You:");
 Console.Info($"Bot: {content}");
 content = Console.ReadInBox("You:", ConsoleColor.Yellow);
+
+// Chat: the history fills the window and the input box sticks to the bottom.
+// The box grows with the message, the spinner of the library runs while the bot is thinking.
+var chat = Console.Chat(
+    message => AskTheModel(message),           // or: async message => await AskTheModelAsync(message)
+    new ChatSettings
+    {
+        InputTitle = "You",
+        MaxInputLines = 5,                     // how far the box grows, null grows it as far as the window allows
+        ThinkingText = "Thinking...",
+        UserStyle = new ChatMessageStyle { Label = "You", Foreground = ConsoleColor.Black, Background = ConsoleColor.Cyan },
+        BotStyle = new ChatMessageStyle { Label = "ConsoleR Bot", Foreground = ConsoleColor.White, Background = ConsoleColor.DarkBlue }
+    });
+
+chat.AddMessage(ChatRole.Bot, "Hi! Ask me anything, Shift+Enter starts a new line, Escape leaves the chat.");
+chat.Run();
+
 var spinner = new Spinner();
 await spinner.Start(() =>
 {
@@ -154,6 +177,37 @@ ConsoleColor GetFrameworkColor(string framework)
 
 
 record Person(string Name, int Age, string City, string Description);
+```
+
+### Chat
+
+`Enter` sends the message, `Shift+Enter` (or `Ctrl+Enter`) starts a new line and `Escape` leaves the
+chat. The input box grows with the message up to `MaxInputLines`, longer lines wrap inside it. While
+the answer of the bot is on the way the spinner of the library runs in the input box.
+
+The arrow keys scroll the history, `PageUp` and `PageDown` jump through it, `Home` and `End` move the
+caret to the beginning and the end of the line it is on, the newest message is always at the bottom.
+
+An answer that arrives in pieces can grow in the chat, the reply then returns `null` to say that it
+drew its own message:
+
+```csharp
+ConsoleChat? chat = null;
+chat = Console.Chat(async message =>
+{
+    var answer = new StringBuilder();
+    chat!.AddMessage(ChatRole.Bot);
+
+    await foreach (var chunk in StreamTheModel(message))
+    {
+        answer.Append(chunk);
+        chat.UpdateLastMessage(answer.ToString());
+    }
+
+    return null;
+});
+
+chat.Run();
 ```
 
 ### Output

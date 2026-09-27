@@ -23,17 +23,22 @@ NuGet\Install-Package Doroudi.ConsoleR
 - Password
 - Alert
 - Table
+- Chat
 
 
 #### How To Use
 
 ```csharp
+using System.Text;
 using ConsoleR;
+using ConsoleR.Chat.Models;
 using ConsoleR.Menu.Models;
 using Console = ConsoleR.Console;
 
-// AsciiArt
+// AsciiArt: outline, solid strokes or a shadow
 Console.AsciiArt("ConsoleR", ConsoleColor.Yellow);
+Console.AsciiArt("ConsoleR", AsciiArtStyle.Filled, ConsoleColor.Yellow);
+Console.AsciiArt("ConsoleR", AsciiArtStyle.Shadow, ConsoleColor.Cyan, ConsoleColor.DarkCyan);
 Console.ReadLine("Press enter to continue");
 
 // WriteLine utilities
@@ -100,6 +105,117 @@ Console.Table(people);
 
 
 record Person(string Name,int Age, string City);
+```
+
+#### Chat
+
+A chat with the history on top and the input box sticky at the bottom of the window. The input grows
+upwards with the message, longer messages wrap inside it. The bot is a plain delegate, so any model or
+service can be plugged in, and the look of both sides of the conversation is configured separately.
+
+```
+You: Explain what ConsoleR is and why the chat history stays on top while the
+     input box sticks to the bottom of the window.
+ConsoleR Bot: ConsoleR is a set of utilities for console apps. The history uses
+              every row above the input, so the input never moves out of sight.
+╭─ You ───────────────────────────────────────────────────────────────────────╮
+│ ask something, Shift+Enter starts a new line                                │
+│ Escape leaves the chat                                                      │
+╰─────────────────────────────────────────────────────────────────────────────╯
+```
+
+While the answer of the bot is on the way the spinner of the library runs inside the input box:
+
+```
+╭─ You ───────────────────────────────────────────────────────────────────────╮
+⠋ Thinking...                                                                 │
+╰─────────────────────────────────────────────────────────────────────────────╯
+```
+
+```csharp
+// The reply is called with every message the user sends and returns the answer of the bot.
+var chat = Console.Chat(
+    message => AskTheModel(message),          // or: async message => await AskTheModelAsync(message)
+    new ChatSettings
+    {
+        InputTitle = "You",                   // text in the border of the input box
+        BorderColor = ConsoleColor.DarkGray,
+        MaxInputLines = 5,                    // how far the input box grows, null grows it as far as the window allows
+        ThinkingText = "Thinking...",         // text the spinner runs in front of
+        UserStyle = new ChatMessageStyle      // look of your own messages
+        {
+            Label = "You",
+            Foreground = ConsoleColor.Black,
+            Background = ConsoleColor.Cyan
+        },
+        BotStyle = new ChatMessageStyle       // look of the answers
+        {
+            Label = "ConsoleR Bot",
+            Foreground = ConsoleColor.White,
+            Background = ConsoleColor.DarkBlue
+        }
+    });
+
+chat.AddMessage(ChatRole.Bot, "Hi! Ask me anything, press Escape to leave the chat.");
+chat.Run();
+```
+
+`Enter` sends the message, `Shift+Enter` (or `Ctrl+Enter`) starts a new line, `Escape` leaves the
+chat. The arrow keys scroll the history, `PageUp` and `PageDown` jump through it, `Home` and `End`
+move the caret to the beginning and the end of the line it is on, the newest message is always at the
+bottom.
+
+An answer that arrives in pieces can grow in the chat, the reply then returns `null` to say that it
+drew its own message:
+
+```csharp
+ConsoleChat? chat = null;
+chat = Console.Chat(async message =>
+{
+    var answer = new StringBuilder();
+    chat!.AddMessage(ChatRole.Bot);
+
+    await foreach (var chunk in StreamTheModel(message))
+    {
+        answer.Append(chunk);
+        chat.UpdateLastMessage(answer.ToString());
+    }
+
+    return null;
+});
+
+chat.Run();
+```
+
+#### AsciiArt
+
+The same message in the three styles of the library:
+
+```
+    _     ____   _____          Outline
+   / \   |  _ \ |_   _|
+  / _ \  | |_) |  | |
+ / ___ \ |  _ <   | |
+/_/   \_\|_| \_\  |_|
+
+    █     ████   █████         Filled
+   █ █   █  █ █ ██   ██
+  █ █ █  █ ███ █  █ █
+ █ ███ █ █  █ █   █ █
+███   ██████ ███  ███
+
+    _     ____   _____         Shadow
+   / \   |  _ \ |_   _|
+  / _ \  | |_) | ░| |░░░
+ / ___ \ |  _ <░░ | |░
+/_/   \_\|_| \_\  |_|░
+ ░░░░░░░░░░░░░░░░  ░░░
+```
+
+```csharp
+Console.AsciiArt("ART", AsciiArtStyle.Outline, ConsoleColor.Gray);
+Console.AsciiArt("ART", AsciiArtStyle.Filled, ConsoleColor.Yellow);
+Console.AsciiArt("ART", AsciiArtStyle.Shadow, ConsoleColor.Cyan, ConsoleColor.DarkCyan);
 ```
 
 #### Output
