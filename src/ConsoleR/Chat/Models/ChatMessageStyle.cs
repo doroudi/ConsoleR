@@ -1,7 +1,7 @@
 namespace ConsoleR.Chat.Models;
 
 /// <summary>
-/// Look of the messages of one <see cref="ChatRole"/>: the label in front of every message and the
+/// Look of the messages of one <see cref="ConsoleChatRole"/>: the label in front of every message and the
 /// colors of the label and of the message text. A color that is <c>null</c> uses the default color
 /// of the console.
 /// </summary>

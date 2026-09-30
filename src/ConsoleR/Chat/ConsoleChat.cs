@@ -2,6 +2,9 @@ using System.Runtime.ExceptionServices;
 using System.Text;
 using ConsoleR.Chat.Models;
 using ConsoleR.Loading;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace ConsoleR;
 
@@ -18,7 +21,7 @@ public static partial class Console
     /// <see cref="ConsoleChat.AddMessage"/> and <see cref="ConsoleChat.UpdateLastMessage"/> returns.
     /// </param>
     /// <param name="settings">Look of the chat, the styles of the user and the bot are set here.</param>
-    public static ConsoleChat Chat(Func<string, string?> reply, ChatSettings? settings = null)
+    public static ConsoleChat Chat(Func<string, string?> reply, ConsoleChatSettings? settings = null)
     {
         return ConsoleChat.Create(reply, settings);
     }
@@ -34,21 +37,32 @@ public static partial class Console
     /// <see cref="ConsoleChat.AddMessage"/> and <see cref="ConsoleChat.UpdateLastMessage"/> returns.
     /// </param>
     /// <param name="settings">Look of the chat, the styles of the user and the bot are set here.</param>
-    public static ConsoleChat Chat(Func<string, Task<string?>> replyAsync, ChatSettings? settings = null)
+    public static ConsoleChat Chat(Func<string, Task<string?>> replyAsync, ConsoleChatSettings? settings = null)
     {
         return ConsoleChat.Create(replyAsync, settings);
+    }
+
+    /// <summary>
+    /// Creates an AI chat in the console that streams its reply. The delegate returns an async stream of
+    /// partial message contents; the chat will add the first chunk as a new bot message and update its
+    /// content for subsequent chunks.
+    /// </summary>
+    public static ConsoleChat Chat(Func<string, IAsyncEnumerable<string?>> replyStreamAsync, ConsoleChatSettings? settings = null)
+    {
+        return ConsoleChat.Create(replyStreamAsync, settings);
     }
 }
 
 /// <summary>
 /// A chat in the console with the history on top and the input box sticky at the bottom of the window.
-/// The chat only draws, the answers come from the reply that is handed to <see cref="ConsoleR.Console.Chat(Func{string,string?},ChatSettings?)"/>.
+/// The chat only draws, the answers come from the reply that is handed to <see cref="ConsoleR.Console.Chat(Func{string,string?},ConsoleChatSettings?)"/>.
 /// </summary>
 public sealed class ConsoleChat
 {
-    private readonly List<ChatMessage> _messages = new();
-    private readonly ChatSettings _settings;
+    private readonly List<ConsoleChatMessage> _messages = new();
+    private readonly ConsoleChatSettings _settings;
     private readonly Func<string, Task<string?>> _reply;
+    private readonly Func<string, IAsyncEnumerable<string?>>? _replyStream;
     private readonly StringBuilder _input = new();
 
     /// <summary>Position of the caret inside the input.</summary>
@@ -69,38 +83,45 @@ public sealed class ConsoleChat
     private bool _thinking;
 
     /// <summary>Creates a chat that answers through the given delegate.</summary>
-    public static ConsoleChat Create(Func<string, string?> reply, ChatSettings? settings = null)
+    public static ConsoleChat Create(Func<string, string?> reply, ConsoleChatSettings? settings = null)
     {
         return new ConsoleChat(settings, message => Task.FromResult(reply(message)));
     }
 
     /// <summary>Creates a chat that answers through the given asynchronous delegate.</summary>
-    public static ConsoleChat Create(Func<string, Task<string?>> replyAsync, ChatSettings? settings = null)
+    public static ConsoleChat Create(Func<string, Task<string?>> replyAsync, ConsoleChatSettings? settings = null)
     {
         return new ConsoleChat(settings, replyAsync);
     }
 
-    private ConsoleChat(ChatSettings? settings, Func<string, Task<string?>> reply)
+    /// <summary>Creates a chat that streams its reply via an async enumerable of partial strings.</summary>
+    public static ConsoleChat Create(Func<string, IAsyncEnumerable<string?>> replyAsync, ConsoleChatSettings? settings = null)
+    {
+        return new ConsoleChat(settings, reply: null, replyStream: replyAsync);
+    }
+
+    private ConsoleChat(ConsoleChatSettings? settings, Func<string, Task<string?>>? reply = null, Func<string, IAsyncEnumerable<string?>>? replyStream = null)
     {
         System.Console.OutputEncoding = Encoding.UTF8;
 
-        _settings = settings ?? new ChatSettings();
-        _reply = reply;
+        _settings = settings ?? new ConsoleChatSettings();
+        _reply = reply ?? (message => Task.FromResult<string?>(null));
+        _replyStream = replyStream;
     }
 
     /// <summary>Look of the chat, changes take effect with the next render.</summary>
-    public ChatSettings Settings => _settings;
+    public ConsoleChatSettings Settings => _settings;
 
     /// <summary>Messages of the chat in the order they were added.</summary>
-    public IReadOnlyList<ChatMessage> Messages => _messages;
+    public IReadOnlyList<ConsoleChatMessage> Messages => _messages;
 
     /// <summary>
     /// Adds a message to the history and draws it. Before <see cref="Show"/>, <see cref="Run"/> or
     /// <see cref="ReadInput"/> the message is only remembered.
     /// </summary>
-    public void AddMessage(ChatRole role, string? text = null)
+    public void AddMessage(ConsoleChatRole role, string? text = null)
     {
-        _messages.Add(new ChatMessage(role, text));
+        _messages.Add(new ConsoleChatMessage(role, text));
         _scroll = int.MaxValue;
         if (_hasRendered) Render();
     }
@@ -138,7 +159,7 @@ public sealed class ConsoleChat
             text = text.Trim();
             if (text.Length == 0) continue;
 
-            AddMessage(ChatRole.User, text);
+            AddMessage(ConsoleChatRole.User, text);
             await ReplyAsync(text);
         }
     }
@@ -295,6 +316,7 @@ public sealed class ConsoleChat
         {
             if (UseSpinner)
             {
+                var streamed = false;
                 // The spinner draws on its own thread, it stops as soon as the answer is there.
                 var spinner = new Spinner();
                 await spinner.Start(
@@ -302,7 +324,30 @@ public sealed class ConsoleChat
                     {
                         try
                         {
-                            answer = await _reply(message);
+                            if (_replyStream != null)
+                            {
+                                StringBuilder sb = null;
+                                await foreach (var part in _replyStream(message))
+                                {
+                                    if (part == null) continue;
+                                    if (sb == null)
+                                    {
+                                        sb = new StringBuilder(part);
+                                        AddMessage(ConsoleChatRole.Bot, sb.ToString());
+                                      }
+                                    else
+                                    {
+                                        sb.Append(part);
+                                        UpdateLastMessage(sb.ToString());
+                                    }
+                                }
+                                // stream handled the updates itself
+                                answer = null;
+                            }
+                            else
+                            {
+                                answer = await _reply(message);
+                            }
                         }
                         catch (Exception exception)
                         {
@@ -316,7 +361,29 @@ public sealed class ConsoleChat
             {
                 try
                 {
-                    answer = await _reply(message);
+                    if (_replyStream != null)
+                    {
+                        StringBuilder sb = null;
+                        await foreach (var part in _replyStream(message))
+                        {
+                            if (part == null) continue;
+                            if (sb == null)
+                            {
+                                sb = new StringBuilder(part);
+                                AddMessage(ConsoleChatRole.Bot, sb.ToString());
+                            }
+                            else
+                            {
+                                sb.Append(part);
+                                UpdateLastMessage(sb.ToString());
+                            }
+                        }
+                        answer = null;
+                    }
+                    else
+                    {
+                        answer = await _reply(message);
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -338,7 +405,7 @@ public sealed class ConsoleChat
 
         // A reply that is null already drew its own message, the chat only leaves the thinking state.
         if (answer == null) Render();
-        else AddMessage(ChatRole.Bot, answer);
+        else AddMessage(ConsoleChatRole.Bot, answer);
     }
 
     /// <summary>

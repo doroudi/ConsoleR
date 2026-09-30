@@ -7,9 +7,7 @@ using Console = ConsoleR.Console;
 
 // ---------------------------------------------------------------------------------------------
 // ConsoleR sample application
-//
-// Every section starts on a cleared screen with its own banner, so the output of a feature never
-// mixes with the output of the one before it. The sections are ordered by how quickly they show
+// The sections are ordered by how quickly they show
 // what the library does: the chat and the menus come first, the details of the output later.
 // ---------------------------------------------------------------------------------------------
 
@@ -40,8 +38,8 @@ void ShowChat()
     // The bot is a local echo here, any model or service can be plugged in through the reply.
     // Enter sends the message, Shift+Enter starts a new line, Escape leaves the chat.
     var chat = Console.Chat(
-        message => $"You said: {message}",
-        new ChatSettings
+        message => ResponseToChat(message),
+        new ConsoleChatSettings
         {
             InputTitle = "You",
             MaxInputLines = 5,
@@ -50,8 +48,20 @@ void ShowChat()
             BotStyle = new ChatMessageStyle { Label = "ConsoleR Bot", Foreground = ConsoleColor.White, Background = ConsoleColor.DarkGreen }
         });
 
-    chat.AddMessage(ChatRole.Bot, "Hi! Ask me anything. Shift+Enter starts a new line, the arrows scroll the history, Escape leaves the chat.");
+    chat.AddMessage(ConsoleChatRole.Bot, "Hi! Ask me anything. Shift+Enter starts a new line, the arrows scroll the history, Escape leaves the chat.");
     chat.Run();
+}
+
+async IAsyncEnumerable<string> ResponseToChat(string message)
+{
+    var reply = $"The bot is a local echo here, any model or service can be plugged in through the reply. The response is streamed to the chat as it is generated. {message}";
+
+    var words = reply.Split(' ');
+    foreach (var word in words)
+    {
+        await Task.Delay(100);
+        yield return word + " ";
+    }
 }
 
 void ShowMenu()
@@ -74,10 +84,10 @@ void ShowTable()
 {
     Person[] people =
     [
-        new Person("Saeid Doroudi", 30, "Dresden", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
-        new Person("Saman", 25, "Marand", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
+        new Person("Doroudi", 37, "Marand", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
+        new Person("Raimar", 40, "Dresden", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
         new Person("Alice", 35, "Zurich", "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
-        new Person("Alireza", 40, "Tabriz", "Lorem Ipsum is simply dummy text of the printing and typesetting industry")
+        new Person("Andishe", 45, "Dubai", "Lorem Ipsum is simply dummy text of the printing and typesetting industry")
     ];
 
     // Every property of the objects becomes a column.

@@ -3,7 +3,7 @@ namespace ConsoleR.Chat.Models;
 /// <summary>
 /// Who wrote a message of the chat history.
 /// </summary>
-public enum ChatRole
+public enum ConsoleChatRole
 {
     /// <summary>A message the user typed.</summary>
     User,
