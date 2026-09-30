@@ -343,7 +343,7 @@ internal static class ChatRenderer
     /// Builds the lines of a single message: the label is printed in front of the first line and the
     /// wrapped lines are indented to the width of the label.
     /// </summary>
-    public static List<ChatLine> BuildMessageLines(ChatMessage message, ChatMessageStyle style, int width)
+    public static List<ChatLine> BuildMessageLines(ConsoleChatMessage message, ChatMessageStyle style, int width)
     {
         var lines = new List<ChatLine>();
         if (width < 1) width = 1;
@@ -386,7 +386,7 @@ internal static class ChatRenderer
     /// <summary>
     /// Every line of the history, messages follow each other in the order they were added.
     /// </summary>
-    public static List<ChatLine> BuildHistoryLines(IReadOnlyList<ChatMessage> messages, ChatSettings settings, int width)
+    public static List<ChatLine> BuildHistoryLines(IReadOnlyList<ConsoleChatMessage> messages, ConsoleChatSettings settings, int width)
     {
         var lines = new List<ChatLine>();
         if (messages == null) return lines;
@@ -410,8 +410,8 @@ internal static class ChatRenderer
     /// <param name="cursor">Position of the caret inside <paramref name="input"/>.</param>
     /// <param name="thinking">The input shows the text that stands in for the answer of the bot.</param>
     public static ChatScreen BuildScreen(
-        IReadOnlyList<ChatMessage> messages,
-        ChatSettings settings,
+        IReadOnlyList<ConsoleChatMessage> messages,
+        ConsoleChatSettings settings,
         int windowWidth,
         int windowHeight,
         int scroll,
@@ -455,7 +455,7 @@ internal static class ChatRenderer
     /// <summary>Rows of the input box, the typed text or the text shown while the bot is answering.</summary>
     private static void AddInputRows(
         List<ChatRow> rows,
-        ChatSettings settings,
+        ConsoleChatSettings settings,
         ChatLayout layout,
         InputView view,
         int scroll,

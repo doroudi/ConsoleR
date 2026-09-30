@@ -4,7 +4,7 @@ namespace ConsoleR.Chat.Models;
 /// Configuration of the chat UI (<see cref="ConsoleR.ConsoleChat"/>). The colors of the user messages
 /// and of the bot messages are set separately, so both sides of the conversation look different.
 /// </summary>
-public class ChatSettings
+public class ConsoleChatSettings
 {
     /// <summary>
     /// Text shown in the border of the input box, for example <c>"You"</c>. An empty title shows a plain border.
@@ -44,5 +44,5 @@ public class ChatSettings
     };
 
     /// <summary>Style of the messages of the given role.</summary>
-    internal ChatMessageStyle StyleOf(ChatRole role) => role == ChatRole.User ? UserStyle : BotStyle;
+    internal ChatMessageStyle StyleOf(ConsoleChatRole role) => role == ConsoleChatRole.User ? UserStyle : BotStyle;
 }
